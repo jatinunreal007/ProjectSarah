@@ -1,0 +1,4 @@
+﻿  Renderer.cpp
+C:\Users\Jatin\OneDrive\Desktop\Dev\VisualStudio\ProjectSarah\Renderer.cpp(19,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jatin\OneDrive\Desktop\Dev\VisualStudio\ProjectSarah\Renderer.cpp(19,31): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  ProjectSarah.vcxproj -> C:\Users\Jatin\OneDrive\Desktop\Dev\VisualStudio\ProjectSarah\x64\Debug\ProjectSarah.exe
