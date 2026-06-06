@@ -142,12 +142,14 @@
     <None Include="render.ppm" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algebra.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Lightings.h" />
+    <ClInclude Include="Hittables.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Vectors.h" />
   </ItemGroup>
