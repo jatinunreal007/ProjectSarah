@@ -33,6 +33,11 @@ public:
 	{
 		return vec3(x - other.x, y - other.y, z - other.z);
 	}
+	vec3 operator+(const vec3& other) const
+	{
+		return vec3(x + other.x, y + other.y, z + other.z);
+	}
+
 	vec3 operator*(float scalar) const
 	{
 		return vec3(x * scalar, y * scalar, z * scalar);
@@ -41,12 +46,17 @@ public:
 	{
 		return vec3(x / scalar, y / scalar, z / scalar);
 	}
-	float Vec3Dot(const vec3& v1, const vec3& v2)
+	static float Vec3Dot(const vec3& v1, const vec3& v2)
 	{
 		float result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 		return result;
 	}
-	vec3 Vec3Cross(const vec3& v1, const vec3& v2)
+	static float Vec3Magnitude(const vec3& v)
+	{
+		float magnitude = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+		return magnitude;
+	}
+	static vec3 Vec3Cross(const vec3& v1, const vec3& v2)
 	{
 		matrice4 m1(v1.y, v1.z, v2.y, v2.z);
 		matrice4 m2(v1.x, v1.z, v2.x, v2.z);
@@ -55,7 +65,14 @@ public:
 		vec3 result = vec3(m1.m4det(), -m2.m4det(), m3.m4det());
 		return result;
 	}
-
-private:
+	static vec3 Vec3Normalize(const vec3& v)
+	{
+		float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+		if (length == 0) {
+			return vec3(0, 0, 0); 
+		}
+		return vec3(v.x / length, v.y / length, v.z / length);
+	}
+public:
 	float x, y, z;
 };
