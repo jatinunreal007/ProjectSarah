@@ -5,8 +5,6 @@
 #include "Ray.h"
 #include "Chrono"
 
-//Hey Github
-
 int main()
 {
 	//RayColor
