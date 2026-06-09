@@ -2,10 +2,11 @@
 
 #include<iostream>
 #include "Vectors.h"
-#include <string>
+#include<string>
 #include "Ray.h"
 #include "Hittables.h"
-#include <algorithm>
+#include<algorithm>
+#include "utilities.h"
 
 class Color:public vec4
 {
@@ -16,11 +17,30 @@ public:
 		std::string colorString = std::to_string(255.0 * r) + " " + std::to_string(255.0 * g) + " " + std::to_string(255.0 * b);
 		return colorString;
 	}
-	void ColorOut(std::ostream& out, const vec3& PixelColor) {
-		out << static_cast<int>(255.999 * PixelColor.x) << " "
-			<< static_cast<int>(255.999 * PixelColor.y) << " "
-			<< static_cast<int>(255.999 * PixelColor.z) << "\n";
+	std::string ColorOut(const vec3& color)
+	{
+		//std::cout << r << " " << g << " " << b <<"\n";
+		std::string colorString = std::to_string(255.0 * color.x) + " " + std::to_string(255.0 * color.y) + " " + std::to_string(255.0 * color.z);
+		return colorString;
 	}
+
+	void ColorOut(std::ostream& out, const vec3& PixelColor) {
+		
+		auto r = (PixelColor.x);
+		auto g = (PixelColor.y);
+		auto b = (PixelColor.z);
+
+		//out << r << " " << g << " " << b << "\n";
+
+		static const Interval ColorInterval(0.000, 0.999);
+
+		int rbyte = int(256 * ColorInterval.clamp(r));
+		int gbyte = int(256 * ColorInterval.clamp(g));
+		int bbyte = int(256 * ColorInterval.clamp(b));
+
+		out << rbyte << " " << gbyte << " " << bbyte << "\n";
+	}
+	
 
 	vec4 Vec4Color(const Color& color)
 	{
@@ -28,7 +48,7 @@ public:
 		return colour;
 	}
 	//Finalising Color of the Objects--->
-	vec3 RayColor(const Ray& ray, Sphere& s1, PointLight& pl1)
+	vec3 RayColor(const Ray& ray, const Sphere& s1, const PointLight& pl1)
 	{
 		
 		if (s1.HitSphere(s1.SphereGetCentre(), s1.SphereGetRadius(), ray))
@@ -37,6 +57,7 @@ public:
 		    float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
 			return vec3(1.0f, 0.65f, 0.0f) * FinalColorFactor*pl1.PLightGetIntensity();
 		}
+
 		vec3 UnitDirection = vec3().Vec3Normalize(ray.GetDirection());
 		float lerp = 0.5f * (UnitDirection.y + 1.0f); // Lerp is a linear interpolation function that takes in a value between 0 and 1 and returns a value between two other values. In this case, we are using it to interpolate between white and blue based on the y component of the unit direction vector.
 		// Here UnitDirection.y is from -1 to 1 , bcoz it a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.

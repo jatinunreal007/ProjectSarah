@@ -9,11 +9,11 @@ public:
 		: direction(Direction), intensity(intensity)
 	{
 	}
-	vec3 PLightGetDirection()
+	vec3 PLightGetDirection() const
 	{
 		return vec3::Vec3Normalize(direction);
 	}
-	float PLightGetIntensity()
+	float PLightGetIntensity() const
 	{
 		return intensity;
 	}

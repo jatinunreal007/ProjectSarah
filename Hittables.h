@@ -11,7 +11,7 @@ public:
 		: x(x), y(y), z(z), radius(radius), tOut(0.0f)
 	{
 	}
-	bool HitSphere(const vec3& centre, float radius, const Ray& r)
+	bool HitSphere(const vec3& centre, const float radius, const Ray& r) const
 	{
 		vec3 OC = r.GetOrigin() - centre;
 		float a = vec3::Vec3Dot(r.GetDirection(), r.GetDirection());
@@ -27,23 +27,24 @@ public:
 		
 		return true;
 	}
-	vec3 SphereGetNormal(const Ray& r)
+	vec3 SphereGetNormal(const Ray& r) const
 	{
 		vec3 pointHit = r.GetOrigin() + r.GetDirection() * tOut;
 		vec3 normal = pointHit - vec3(x, y, z);
 		return vec3(normal / radius);
 	}
 
-	vec3 SphereGetCentre()
+	vec3 SphereGetCentre() const
 	{
 		return vec3(x, y, z);
 	}
-	float SphereGetRadius()
+	float SphereGetRadius() const
 	{
 		return radius;
 	}
 
 private:
-	float x, y, z, radius, tOut;
+	float x, y, z, radius;
+	mutable float tOut;
 };
 
