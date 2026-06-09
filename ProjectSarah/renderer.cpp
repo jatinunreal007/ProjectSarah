@@ -10,6 +10,12 @@ int main()
 	//RayColor
 	//Color().RayColor(Ray(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0)));
 
+	//Objects--->
+	Sphere s1(0.0f, 0.0f, 2.0f, 0.5f);
+
+	//Lightings--->
+	PointLight pl1(vec3(0.5f, -0.5f, -0.02f), 2.0f);
+
 	//Aspect Ratio of Viewport
 	int ImageWidth = 1600;
 	int ImageHeight = (int)(ImageWidth / aspectRatio);
@@ -36,6 +42,9 @@ int main()
 
 	auto start = std::chrono::high_resolution_clock::now();
 
+	Camera c1;
+	Color ColorUtil;
+
 	for (int i = 0; i < ImageHeight ; i++)
 	{
 		std::clog << "Rendering row " << i << "\n";
@@ -43,10 +52,10 @@ int main()
 		{
 
 		vec3 PixelCentre = UpperLeftPixel + (HorizontalDelta * j) + (VerticalDelta * i); // We need to move right by j pixels and down by i pixels to get the center of the pixel at (i,j)
-		vec3 RayDirection = PixelCentre - Camera().CameraGetOrigin(); 
-		Ray r(Camera().CameraGetOrigin(), RayDirection);
-		vec3 PixelColor = Color().RayColor(r);
-		render << Color().ColorOut(PixelColor) << "\n"; //----> by convention rows are filled first then columns
+		vec3 RayDirection = PixelCentre - c1.CameraGetOrigin(); 
+		Ray r(c1.CameraGetOrigin(), RayDirection);
+		vec3 PixelColor = ColorUtil.RayColor(r, s1, pl1);
+		ColorUtil.ColorOut(render, PixelColor);          //----> by convention rows are filled first then columns
 		// Color().ColorOut will either take floats from 0 to 1 representing rgb , or direct a vector
 		}
 

@@ -22,6 +22,6 @@ private:
 	float intensity;
 };
 
-PointLight pl1(vec3(0.5f, -0.5f, -0.02f), 2.0f);
+
 
 

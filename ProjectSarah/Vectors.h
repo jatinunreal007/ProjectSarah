@@ -58,13 +58,11 @@ public:
 	}
 	static vec3 Vec3Cross(const vec3& v1, const vec3& v2)
 	{
-		matrice4 m1(v1.y, v1.z, v2.y, v2.z);
-		matrice4 m2(v1.x, v1.z, v2.x, v2.z);
-		matrice4 m3(v1.x, v1.y, v2.x, v2.y);
-
-		vec3 result = vec3(m1.m4det(), -m2.m4det(), m3.m4det());
-		return result;
+		return vec3(v1.y * v2.z - v1.z * v2.y,
+					v1.z * v2.x - v1.x * v2.z,
+					v1.x * v2.y - v1.y * v2.x);
 	}
+
 	static vec3 Vec3Normalize(const vec3& v)
 	{
 		float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);

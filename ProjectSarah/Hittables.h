@@ -47,6 +47,3 @@ private:
 	float x, y, z, radius, tOut;
 };
 
-//Objects--->
-Sphere s1(0.0f, 0.0f, 2.0f, 0.5f);
-//Sphere s2(0.5f, 0.0f, 2.0f, 0.5f);

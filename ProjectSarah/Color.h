@@ -16,11 +16,10 @@ public:
 		std::string colorString = std::to_string(255.0 * r) + " " + std::to_string(255.0 * g) + " " + std::to_string(255.0 * b);
 		return colorString;
 	}
-	std::string ColorOut(const vec3& color)
-	{
-		//std::cout << r << " " << g << " " << b <<"\n";
-		std::string colorString = std::to_string(255.0 * color.x) + " " + std::to_string(255.0 * color.y) + " " + std::to_string(255.0 * color.z);
-		return colorString;
+	void ColorOut(std::ostream& out, const vec3& PixelColor) {
+		out << static_cast<int>(255.999 * PixelColor.x) << " "
+			<< static_cast<int>(255.999 * PixelColor.y) << " "
+			<< static_cast<int>(255.999 * PixelColor.z) << "\n";
 	}
 
 	vec4 Vec4Color(const Color& color)
@@ -29,7 +28,7 @@ public:
 		return colour;
 	}
 	//Finalising Color of the Objects--->
-	vec3 RayColor(const Ray& ray)
+	vec3 RayColor(const Ray& ray, Sphere& s1, PointLight& pl1)
 	{
 		
 		if (s1.HitSphere(s1.SphereGetCentre(), s1.SphereGetRadius(), ray))

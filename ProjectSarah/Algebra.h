@@ -1,9 +1,9 @@
 #pragma once
 
-class matrice4
+class matrice2
 {
 public:
-	matrice4(float a11, float a12, float a21, float a22)
+	matrice2(float a11, float a12, float a21, float a22)
 		: a11(a11), a12(a12), a21(a21), a22(a22)
 	{	
 
