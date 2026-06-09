@@ -8,9 +8,15 @@
 #include<algorithm>
 #include "utilities.h"
 
-class Color:public vec4
+class Color:public vec3
 {
 public:
+	Color()
+		: vec3(0.0f, 0.0f, 0.0f) {
+	}
+	Color(float r, float g, float b)
+		: vec3(r, g, b) {
+	}
 	std::string ColorOut(float r, float g, float b)
 	{
 		//std::cout << r << " " << g << " " << b <<"\n";
@@ -42,9 +48,9 @@ public:
 	}
 	
 
-	vec4 Vec4Color(const Color& color)
+	vec3 vec3Color(const Color& color)
 	{
-		vec4 colour = vec4(color.x * 255.0f, color.y * 255.0f, color.z * 255.0f, color.w * 255.0f);
+		vec3 colour = vec3(color.x * 255.0f, color.y * 255.0f, color.z * 255.0f);
 		return colour;
 	}
 	//Finalising Color of the Objects--->
@@ -66,5 +72,5 @@ public:
 		//return vec3(0.0f, 0.0f, 0.0f);	
 	}
 private:
-	float r,g,b,a;
+	float r,g,b;
 };

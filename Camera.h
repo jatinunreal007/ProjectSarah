@@ -11,11 +11,11 @@ class Camera
 public:
 	const double CameraGetHeight()
 	{
-		return viewport_height;
+		return ViewportHeight;
 	}
 	const double CameraGetWidth()
 	{
-		return viewport_width;
+		return ViewportWidth;
 	}
 	const vec3 CameraGetOrigin()
 	{
@@ -26,10 +26,11 @@ public:
 	{
 
 		//Aspect Ratio of Viewport
-		ImageWidth = 800;
+		ImageWidth = 1600;
 		ImageHeight = (int)(ImageWidth / aspectRatio);
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
+		PixelSampleScale = 1.0 / SamplePerpixel;
 
 		//Calculate the Horizontal and Vertical Vectors of the viewport
 		 vec3 ViewportHorizontal = vec3(CameraGetWidth(), 0.0, 0.0);
@@ -43,6 +44,21 @@ public:
 		 vec3 UpperLeftViewport = vec3(-CameraGetWidth() / 2, CameraGetHeight() / 2, 1.0);
 		 UpperLeftPixel = (UpperLeftViewport)+(HorizontalDelta / 2) + (VerticalDelta / 2); // We need to move half a pixel right and half a pixel down to get the center of the upper left pixel
 
+	}
+
+    Ray GetRay(int j, int i)
+	{
+		auto offset = SampleSquare();
+		auto PixelSample = UpperLeftPixel
+			+ (HorizontalDelta * (i + offset.x))
+			+ (VerticalDelta * (j + offset.y));
+		auto RayDirection = PixelSample - CameraGetOrigin();
+		return Ray(CameraGetOrigin(), RayDirection);
+	}
+
+	vec3 SampleSquare()
+	{
+		return vec3(RandomDouble() - 0.5, RandomDouble() - 0.5, 0.0);
 	}
 	//Render function---->
 
@@ -69,18 +85,15 @@ public:
 			std::clog << "Rendering row " << i << "\n";
 			for (int j = 0; j < ImageWidth; j++)
 			{
+				Color PixelColor(0.0f, 0.0f, 0.0f);
 
-				vec3 PixelCentre = UpperLeftPixel + (HorizontalDelta * j) + (VerticalDelta * i); // We need to move right by j pixels and down by i pixels to get the center of the pixel at (i,j)
-				vec3 RayDirection = PixelCentre - CameraGetOrigin();
-				Ray r(CameraGetOrigin(), RayDirection);
-				vec3 PixelColor = ColorUtil.RayColor(r, s1, pl1);
-				//for ()
-				//{
-
-				//}
-				ColorUtil.ColorOut(render, PixelColor);          //----> by convention rows are filled first then columns
-				// Color().ColorOut will either take floats from 0 to 1 representing rgb , or direct a vector
-				//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
+				for (int k = 0; k < SamplePerpixel; k++)
+				{
+					Ray r = GetRay(i, j);
+					PixelColor += ColorUtil.RayColor(r, s1, pl1);
+					//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
+				}
+				ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
 			}
 
 		}
@@ -94,22 +107,12 @@ public:
 		render.close();
 	}
 
-	//Ray GetRay()
-	//{
-	//	auto offset = SampleSquare();
-	//	auto PixelSample = 
-	//}
-	vec3 SampleSquare()
-	{
-		return vec3(RandomDouble() - 0.5, RandomDouble() - 0.5, 0.0);
-	}
-
 private:
-	double viewport_width = 2;
-	double viewport_height = viewport_width / aspectRatio;
+	double ViewportWidth = 2;
+	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 2.0f;
-	int SamplePerpixel = 128;
-	double PixelSampleScale = 1.0 / SamplePerpixel;
+	int SamplePerpixel = 512;
+	double PixelSampleScale;
 
 private:
 	int ImageWidth;
