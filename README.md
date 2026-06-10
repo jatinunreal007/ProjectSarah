@@ -1,6 +1,6 @@
 # ProjectSarah
 
-RayTracing renderer from Scratch
+RayTracing renderer from Scratch 
 Reference : *RayTracing in One Weekend* by Peter Shirley
 
 Insights till now[10-06-2026] -->
