@@ -148,10 +148,11 @@
     <ClInclude Include="Algebra.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="HittablesList.h" />
     <ClInclude Include="Lightings.h" />
     <ClInclude Include="Hittables.h" />
     <ClInclude Include="Ray.h" />
-    <ClInclude Include="utilities.h" />
+    <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vectors.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

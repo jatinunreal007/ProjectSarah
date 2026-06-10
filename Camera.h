@@ -4,7 +4,7 @@
 #include "Vectors.h"
 #include "Chrono"
 
-const double aspectRatio = 16.0 / 9.0;
+const double aspectRatio = 16.0 / 10.0;
 
 class Camera
 {
@@ -21,6 +21,8 @@ public:
 	{
 		return vec3(0.0, 0.0, 0.0);
 	}
+
+	
 
 	void InitializeViewport()
 	{
@@ -62,7 +64,7 @@ public:
 	}
 	//Render function---->
 
-	void Render(const Sphere& s1, const PointLight& pl1)
+	void Render(const Hittable& scene, const Light& pl1)
 	{
 
 		InitializeViewport();
@@ -90,7 +92,7 @@ public:
 				for (int k = 0; k < SamplePerpixel; k++)
 				{
 					Ray r = GetRay(i, j);
-					PixelColor += ColorUtil.RayColor(r, s1, pl1);
+					PixelColor += ColorUtil.RayColor(r, scene, pl1);
 					//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
 				}
 				ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
@@ -111,7 +113,7 @@ private:
 	double ViewportWidth = 2;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 2.0f;
-	int SamplePerpixel = 512;
+	int SamplePerpixel = 256;
 	double PixelSampleScale;
 
 private:

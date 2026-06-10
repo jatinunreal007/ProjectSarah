@@ -46,7 +46,10 @@
     <ClInclude Include="Lightings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utilities.h">
+    <ClInclude Include="Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HittablesList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

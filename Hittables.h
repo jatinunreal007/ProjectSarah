@@ -4,39 +4,58 @@
 #include "Lightings.h"
 
 //Sphere--->
-class Sphere
+class HitRecord
 {
 public:
-	Sphere(float x, float y, float z, float radius)
-		: x(x), y(y), z(z), radius(radius), tOut(0.0f)
-	{
-	}
-	bool HitSphere(const vec3& centre, const float radius, const Ray& r) const
+	vec3 point;
+	vec3 normal;
+	double t;
+};
+
+class Hittable
+{
+public:
+	virtual ~Hittable() = default;
+	virtual bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const = 0;
+
+};
+
+class Sphere : public Hittable
+{
+public:
+	Sphere(vec3 centre, float radius)
+		: centre(centre), radius(radius) {}
+	
+	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
 	{
 		vec3 OC = r.GetOrigin() - centre;
 		float a = vec3::Vec3Dot(r.GetDirection(), r.GetDirection());
 		float b = -2.0f * vec3::Vec3Dot(OC, r.GetDirection());
 		float c = vec3::Vec3Dot(OC, OC) - radius * radius;
 		float discriminant = (b * b) - (4 * a * c);
-
-		if (discriminant < 0) {
+		auto sqrtDiscriminant = std::sqrt(discriminant);
+		if (discriminant < 0) 
+		{
 			return false;
 		}
+		auto root = (-b - sqrtDiscriminant) / (2.0f * a);
+		if (root < tMin || root > tMax)
+		{
+			root = (-b + sqrtDiscriminant) / (2.0f * a);
 
-	    this->tOut = (-b - std::sqrt(discriminant)) / (2.0f * a);
-		
+			if (root < tMin || root > tMax)
+				return false;
+		}
+		rec.t = root;
+		rec.point = r.GetOrigin() + r.GetDirection() * rec.t;
+		rec.normal = (rec.point - centre) / radius;
+
 		return true;
-	}
-	vec3 SphereGetNormal(const Ray& r) const
-	{
-		vec3 pointHit = r.GetOrigin() + r.GetDirection() * tOut;
-		vec3 normal = pointHit - vec3(x, y, z);
-		return vec3(normal / radius);
 	}
 
 	vec3 SphereGetCentre() const
 	{
-		return vec3(x, y, z);
+		return centre;
 	}
 	float SphereGetRadius() const
 	{
@@ -44,7 +63,7 @@ public:
 	}
 
 private:
-	float x, y, z, radius;
-	mutable float tOut;
+	vec3 centre;
+	float radius;
 };
 

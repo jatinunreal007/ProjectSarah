@@ -2,10 +2,10 @@
 #include "Vectors.h"
 #include "Hittables.h"
 
-class PointLight
+class Light
 {
 public:
-	PointLight(vec3 Direction, float intensity)
+	Light(vec3 Direction, float intensity)
 		: direction(Direction), intensity(intensity)
 	{
 	}
