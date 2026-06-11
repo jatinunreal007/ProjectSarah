@@ -13,11 +13,11 @@ class Color:public vec3
 {
 public:
 	Color()
-		: vec3(0.0f, 0.0f, 0.0f) {
-	}
+		: vec3(0.0f, 0.0f, 0.0f) {}
+
 	Color(float r, float g, float b)
-		: vec3(r, g, b) {
-	}
+		: vec3(r, g, b) {}
+
 	std::string ColorOut(float r, float g, float b)
 	{
 		//std::cout << r << " " << g << " " << b <<"\n";
@@ -58,16 +58,16 @@ public:
 	vec3 RayColor(const Ray& ray, const Hittable& scene, const Light& pl1)
 	{
 		HitRecord rec;
-		if (scene.Hit(ray,0.0f, 100000.0f, rec))
+		if (scene.Hit(ray,0.0f, infinity, rec))
 		{
 			vec3 Normal = (rec.normal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f; // from a range of -1 to 1 to a range of 0 to 1 to use it as a color. 
 			float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
-			return vec3(1.0f, 0.65f, 0.0f) * FinalColorFactor * pl1.PLightGetIntensity();
+			return rec.color * FinalColorFactor * pl1.PLightGetIntensity();
 		}
 
 		vec3 UnitDirection = vec3().Vec3Normalize(ray.GetDirection());
 		float lerp = 0.5f * (UnitDirection.y + 1.0f); // Lerp is a linear interpolation function that takes in a value between 0 and 1 and returns a value between two other values. In this case, we are using it to interpolate between white and blue based on the y component of the unit direction vector.
-		// Here UnitDirection.y is from -1 to 1 , bcoz it a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.
+		// Here UnitDirection.y is from -1 to 1 , bcoz it is a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.
 		auto BlendColor = (vec3(1.0f, 1.0f, 1.0f) * (1.0f - lerp)) + (vec3(0.5f, 0.7f, 1.0f) * lerp);
 		return BlendColor;
 		//return vec3(0.0f, 0.0f, 0.0f);	

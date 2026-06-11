@@ -10,6 +10,8 @@ inline double DegreesToRadians(double degrees) {
 	return degrees * std::numbers::pi / 180.0;
 }
 
+const double infinity = std::numeric_limits<double>::infinity();
+
 inline double RandomDouble() {
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -23,6 +25,7 @@ inline double RandomDouble(double min, double max) {
 	std::uniform_real_distribution<double> DoubleDist(min, max);
 	return DoubleDist(gen);
 }
+
 
 class Interval
 {

@@ -14,6 +14,9 @@ int main()
 	Sphere s1(vec3(0.0f, 0.0f, -2.0f), 0.5f);
 	scene.Add(std::make_shared<Sphere>(s1));
 
+	Plane p1(vec3(0.0f, -0.5f, -2.0f), vec3(0.0f, 1.0f, 0.0f));
+	scene.Add(std::make_shared<Plane>(p1));
+
 	//Lightings--->
 	Light pl1(vec3(-0.5f, 0.5f, 0.02f), 2.0f);
 
