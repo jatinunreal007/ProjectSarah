@@ -28,7 +28,7 @@ public:
 	{
 
 		//Aspect Ratio of Viewport
-		ImageWidth = 800;
+		ImageWidth = 1600;
 		ImageHeight = (int)(ImageWidth / aspectRatio);
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
@@ -113,7 +113,7 @@ private:
 	double ViewportWidth = 2;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 2.0f;
-	int SamplePerpixel = 64;
+	int SamplePerpixel = 512;
 	double PixelSampleScale;
 
 private:
