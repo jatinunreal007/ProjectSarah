@@ -20,7 +20,7 @@ int main()
 	//Camera--->
 	Camera c1;
 
-	std::clog << "Starting Render...\n";
+	std::clog << "Starting Render....\n";
 	c1.Render(scene, pl1);
 	
 	std::cin.get();

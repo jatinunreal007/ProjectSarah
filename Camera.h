@@ -72,8 +72,8 @@ public:
 
 
 		//Image Info Output--->
-		std::cout << "\nImage Width: " << ImageWidth << "\n";
-		std::cout << "Image Height: " << ImageHeight << "\n";
+		std::cout << "\nImage Width: " << ImageWidth << std::endl;
+		std::cout << "Image Height: " << ImageHeight << std::endl;
 
 		render << "P3\n" << ImageWidth << " " << ImageHeight << "\n255\n";
 
