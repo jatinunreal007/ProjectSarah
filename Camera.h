@@ -4,7 +4,7 @@
 #include "Vectors.h"
 #include "Chrono"
 
-const double aspectRatio = 16.0 / 10.0;
+const double aspectRatio = 16.0 / 9.0;
 
 class Camera
 {
@@ -28,7 +28,7 @@ public:
 	{
 
 		//Aspect Ratio of Viewport
-		ImageWidth = 1600;
+		ImageWidth = 800;
 		ImageHeight = (int)(ImageWidth / aspectRatio);
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
@@ -113,7 +113,7 @@ private:
 	double ViewportWidth = 2;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 2.0f;
-	int SamplePerpixel = 256;
+	int SamplePerpixel = 4;
 	double PixelSampleScale;
 
 private:
