@@ -28,23 +28,23 @@ public:
 	{
 
 		//Aspect Ratio of Viewport
-		ImageWidth = 1600;
+		ImageWidth = 800;
 		ImageHeight = (int)(ImageWidth / aspectRatio);
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
 		PixelSampleScale = 1.0 / SamplePerpixel;
 
 		//Calculate the Horizontal and Vertical Vectors of the viewport
-		 vec3 ViewportHorizontal = vec3(CameraGetWidth(), 0.0, 0.0);
-		 vec3 ViewportVertical = vec3(0.0, CameraGetHeight(), 0.0);
+		 vec3 ViewportHorizontal = vec3(CameraGetWidth(), 0.0f, 0.0f);
+		 vec3 ViewportVertical = vec3(0.0f, CameraGetHeight(), 0.0f);
 
 		//Calculate the linear Deltas (i.e = small change or unit change) of the viewport
 		 HorizontalDelta = ViewportHorizontal / ImageWidth;
 		 VerticalDelta = (ViewportVertical / ImageHeight) * (-1); // Negative bcoz we need to move downwards in the viewport to fill the rows
 
 		//Calculate the upper left corner of the viewport
-		 vec3 UpperLeftViewport = vec3(-CameraGetWidth() / 2, CameraGetHeight() / 2, 1.0);
-		 UpperLeftPixel = (UpperLeftViewport)+(HorizontalDelta / 2) + (VerticalDelta / 2); // We need to move half a pixel right and half a pixel down to get the center of the upper left pixel
+		 vec3 UpperLeftViewport = vec3(-CameraGetWidth() / 2.0f, CameraGetHeight() / 2.0f, 1.0f);
+		 UpperLeftPixel = (UpperLeftViewport)+(HorizontalDelta / 2.0f) + (VerticalDelta / 2.0f); // We need to move half a pixel right and half a pixel down to get the center of the upper left pixel
 
 	}
 
@@ -60,7 +60,7 @@ public:
 
 	vec3 SampleSquare()
 	{
-		return vec3(RandomDouble() - 0.5, RandomDouble() - 0.5, 0.0);
+		return vec3(RandomDouble() - 0.5f, RandomDouble() - 0.5f, 0.0f);
 	}
 	//Render function---->
 
@@ -110,10 +110,10 @@ public:
 	}
 
 private:
-	double ViewportWidth = 2;
+	double ViewportWidth = 2.0f;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 2.0f;
-	int SamplePerpixel = 512;
+	int SamplePerpixel = 4;
 	double PixelSampleScale;
 
 private:

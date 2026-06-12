@@ -77,7 +77,7 @@ class Plane : public Hittable
 {
 public:
 	Plane(vec3 PassingPoint, vec3 normal)
-		: PassingPoint(PassingPoint), normal(normal) {}
+		: PassingPoint(PassingPoint), normal(vec3::Vec3Normalize(normal)) {}
 
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override

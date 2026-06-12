@@ -15,19 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="render.ppm">
-      <Filter>Source Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Vectors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -52,5 +44,13 @@
     <ClInclude Include="HittablesList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Vectors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="render.ppm">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
