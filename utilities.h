@@ -13,7 +13,7 @@ inline double DegreesToRadians(double degrees) {
 const double infinity = std::numeric_limits<double>::infinity();
 
 inline double RandomDouble() {
-	static std::random_device rd;
+	static std::random_device rd; //remove static when we will move to multithreading, bcoz static will be shared across threads and will cause data
 	static std::mt19937 gen(rd());
     std::uniform_real_distribution<double> DoubleDist(0.0, 1.0);
 	return DoubleDist(gen);
