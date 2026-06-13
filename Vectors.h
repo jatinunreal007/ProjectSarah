@@ -53,6 +53,10 @@ public:
 	{
 		return vec3(x / scalar, y / scalar, z / scalar);
 	}
+	vec3 operator*(const vec3& other) const
+	{
+		return vec3(x * other.x, y * other.y, z * other.z);
+	}
 	static float Vec3Dot(const vec3& v1, const vec3& v2)
 	{
 		float result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;

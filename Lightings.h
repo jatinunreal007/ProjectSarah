@@ -21,7 +21,3 @@ private:
 	vec3 direction;
 	float intensity;
 };
-
-
-
-

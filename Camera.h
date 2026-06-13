@@ -28,7 +28,7 @@ public:
 	{
 
 		//Aspect Ratio of Viewport
-		ImageWidth = 800;
+		ImageWidth = 1600;
 		ImageHeight = (int)(ImageWidth / aspectRatio);
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
@@ -36,14 +36,14 @@ public:
 
 		//Calculate the Horizontal and Vertical Vectors of the viewport
 		 vec3 ViewportHorizontal = vec3(CameraGetWidth(), 0.0f, 0.0f);
-		 vec3 ViewportVertical = vec3(0.0f, CameraGetHeight(), 0.0f);
+		 vec3 ViewportVertical = vec3(0.0f,-CameraGetHeight(), 0.0f);
 
 		//Calculate the linear Deltas (i.e = small change or unit change) of the viewport
 		 HorizontalDelta = ViewportHorizontal / ImageWidth;
-		 VerticalDelta = (ViewportVertical / ImageHeight) * (-1); // Negative bcoz we need to move downwards in the viewport to fill the rows
+		 VerticalDelta = (ViewportVertical / ImageHeight); // Negative bcoz we need to move downwards in the viewport to fill the rows
 
 		//Calculate the upper left corner of the viewport
-		 vec3 UpperLeftViewport = vec3(-CameraGetWidth() / 2.0f, CameraGetHeight() / 2.0f, 1.0f);
+		 vec3 UpperLeftViewport = vec3(-CameraGetWidth() / 2.0f, CameraGetHeight() / 2.0f, FocalLength);
 		 UpperLeftPixel = (UpperLeftViewport)+(HorizontalDelta / 2.0f) + (VerticalDelta / 2.0f); // We need to move half a pixel right and half a pixel down to get the center of the upper left pixel
 
 	}
@@ -92,7 +92,7 @@ public:
 				for (int k = 0; k < SamplePerpixel; k++)
 				{
 					Ray r = GetRay(i, j);
-					PixelColor += ColorUtil.RayColor(r, scene, pl1);
+					PixelColor += ColorUtil.RayColor(r, scene, pl1, MaxDepth);
 					//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
 				}
 				ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
@@ -110,11 +110,12 @@ public:
 	}
 
 private:
-	double ViewportWidth = 2.0f;
+	double ViewportWidth = 4.0f;
 	double ViewportHeight = ViewportWidth / aspectRatio;
-	const float FocalLength = 2.0f;
-	int SamplePerpixel = 4;
+	const float FocalLength = 1.0f;
+	int SamplePerpixel = 1024;
 	double PixelSampleScale;
+	int MaxDepth = 50;
 
 private:
 	int ImageWidth;

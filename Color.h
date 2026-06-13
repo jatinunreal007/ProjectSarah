@@ -33,11 +33,18 @@ public:
 
 	void ColorOut(std::ostream& out, const vec3& PixelColor) {
 		
-		auto r = (PixelColor.x);
-		auto g = (PixelColor.y);
-		auto b = (PixelColor.z);
+		auto R = (PixelColor.x);
+		auto G = (PixelColor.y);
+		auto B = (PixelColor.z);
 
 		//out << r << " " << g << " " << b << "\n";
+
+
+		//gama corr
+		auto r = std::sqrt(R);
+		auto g = std::sqrt(G);
+		auto b = std::sqrt(B);
+
 
 		static const Interval ColorInterval(0.000, 0.999);
 
@@ -55,16 +62,27 @@ public:
 		return colour;
 	}
 	//Finalising Color of the Objects--->
-	vec3 RayColor(const Ray& ray, const Hittable& scene, const Light& pl1)
+	vec3 RayColor(const Ray& ray, const Hittable& scene, const Light& pl1, int MaxDepth)
 	{
-		HitRecord rec;
-		if (scene.Hit(ray,0.0f, infinity, rec))
-		{
-			vec3 Normal = (rec.normal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f; // from a range of -1 to 1 to a range of 0 to 1 to use it as a color. 
-			float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
-			return rec.color * FinalColorFactor * pl1.PLightGetIntensity();
-		}
+		if(MaxDepth <= 0)
+			return vec3(0.0f, 0.0f, 0.0f);
 
+		HitRecord rec;
+
+		//if (scene.Hit(ray,0.0f, infinity, rec))
+		//{
+		//	vec3 Normal = (rec.normal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f; // from a range of -1 to 1 to a range of 0 to 1 to use it as a color. 
+		//	float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
+		//	return rec.color * FinalColorFactor * pl1.PLightGetIntensity();
+		//}
+
+		if (scene.Hit(ray, 0.001f, infinity, rec))
+		{
+			vec3 dir = rec.normal + RandomUnitVec3();
+			vec3 Incomming =  RayColor(Ray(rec.point, dir), scene, pl1, MaxDepth - 1);
+			return Incomming * rec.color;
+		}
+	
 		vec3 UnitDirection = vec3().Vec3Normalize(ray.GetDirection());
 		float lerp = 0.5f * (UnitDirection.y + 1.0f); // Lerp is a linear interpolation function that takes in a value between 0 and 1 and returns a value between two other values. In this case, we are using it to interpolate between white and blue based on the y component of the unit direction vector.
 		// Here UnitDirection.y is from -1 to 1 , bcoz it is a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.

@@ -34,7 +34,7 @@ public:
 	{
 		vec3 OC = r.GetOrigin() - centre;
 		float a = vec3::Vec3Dot(r.GetDirection(), r.GetDirection());
-		float b = -2.0f * vec3::Vec3Dot(OC, r.GetDirection());
+		float b = 2.0f * vec3::Vec3Dot(OC, r.GetDirection());
 		float c = vec3::Vec3Dot(OC, OC) - radius * radius;
 		float discriminant = (b * b) - (4 * a * c);
 		auto sqrtDiscriminant = std::sqrt(discriminant);
@@ -53,7 +53,7 @@ public:
 		rec.t = root;
 		rec.point = r.GetOrigin() + r.GetDirection() * rec.t;
 		rec.normal = (rec.point - centre) / radius;
-		rec.color = (vec3(1.0f, 0.65f, 0.0f));
+		rec.color = (vec3(1.0, 0.3, 0.0));
 
 		return true;
 
