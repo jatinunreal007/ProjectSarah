@@ -103,7 +103,7 @@ public:
 		//Render Time Calculation--->
 		auto end = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> elapsed = end - start;
-		std::cout << "\nRender complete!\n";
+		std::cout << "\nRender completed!\n";
 		std::cout << "Time taken: " << elapsed.count() << " seconds.\n";
 
 		render.close();
@@ -113,7 +113,7 @@ private:
 	double ViewportWidth = 4.0f;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 4.0f;
-	int SamplePerpixel = 1024;
+	int SamplePerpixel = 256;
 	double PixelSampleScale;
 	int MaxDepth = 50;
 
