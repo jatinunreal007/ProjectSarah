@@ -31,7 +31,8 @@ public:
 		return colorString;
 	}
 
-	void ColorOut(std::ostream& out, const vec3& PixelColor) {
+	void ColorOut(std::ostream& out, const vec3& PixelColor) 
+    {
 		
 		auto R = (PixelColor.x);
 		auto G = (PixelColor.y);
