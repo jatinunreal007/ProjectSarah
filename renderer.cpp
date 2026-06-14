@@ -14,7 +14,6 @@ int main()
 	Sphere s1(vec3(0.0f, 0.0f, 6.0f), 1.0f);
 	scene.Add(std::make_shared<Sphere>(s1));
 
-	
 	Sphere s2(vec3(4.0f, 1.0f, 9.0f), 2.0f);
 	scene.Add(std::make_shared<Sphere>(s2));
 
