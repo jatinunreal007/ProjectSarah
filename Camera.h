@@ -2,9 +2,9 @@
 
 #include "Ray.h"
 #include "Vectors.h"
-#include "Chrono"
+#include <chrono>
 
-const double aspectRatio = 16.0 / 9.0;
+const double aspectRatio = 1.9 / 1.0;
 
 class Camera
 {
@@ -112,7 +112,7 @@ public:
 private:
 	double ViewportWidth = 4.0f;
 	double ViewportHeight = ViewportWidth / aspectRatio;
-	const float FocalLength = 1.0f;
+	const float FocalLength = 4.0f;
 	int SamplePerpixel = 1024;
 	double PixelSampleScale;
 	int MaxDepth = 50;

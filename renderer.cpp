@@ -11,8 +11,15 @@ int main()
 	HittablesList scene;
 
 	//Objects--->
-	Sphere s1(vec3(0.0f, 0.0f, 2.0f), 1.0f);
+	Sphere s1(vec3(0.0f, 0.0f, 6.0f), 1.0f);
 	scene.Add(std::make_shared<Sphere>(s1));
+
+	
+	Sphere s2(vec3(4.0f, 1.0f, 9.0f), 2.0f);
+	scene.Add(std::make_shared<Sphere>(s2));
+
+	Sphere s3(vec3(-1.25f, -0.6f, 5.0f), 0.4f);
+	scene.Add(std::make_shared<Sphere>(s3));
 
 	Plane p1(vec3(0.0f, -1.0f, -2.0f), vec3(0.0f, 1.0f, 0.0f));
 	scene.Add(std::make_shared<Plane>(p1));
