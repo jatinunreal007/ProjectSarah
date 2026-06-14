@@ -19,7 +19,6 @@ inline double RandomDouble() {
 	std::uniform_real_distribution<double> DoubleDist(0.0, 1.0);
 	return DoubleDist(gen);
 }
-//Git Process Check
 
 inline double RandomDouble(double min, double max) {
 	static std::random_device rd;
