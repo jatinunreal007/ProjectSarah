@@ -3,6 +3,7 @@
 #include "Ray.h"
 #include "Lightings.h"
 
+class materials;
 
 class HitRecord
 {
@@ -11,6 +12,14 @@ public:
 	vec3 normal;
 	double t;
 	vec3 color;
+	std::shared_ptr<materials> mat;
+	bool frontFace;
+
+	void SetFaceNormal(const Ray& r, const vec3 OutwardNormal)
+	{
+		frontFace = vec3::Vec3Dot(r.GetDirection(), OutwardNormal) < 0;
+		normal = frontFace ? OutwardNormal : OutwardNormal*(-1);
+	}
 };
 
 
@@ -54,7 +63,8 @@ public:
 		rec.point = r.GetOrigin() + r.GetDirection() * rec.t;
 		rec.normal = (rec.point - centre) / radius;
 		rec.color = (vec3(1.0, 0.3, 0.0));
-
+		rec.SetFaceNormal(r, rec.normal);
+		rec.mat = mat;
 		return true;
 
 	}
@@ -71,6 +81,7 @@ public:
 private:
 	vec3 centre;
 	float radius;
+	std::shared_ptr<materials> mat;
 };
 
 class Plane : public Hittable

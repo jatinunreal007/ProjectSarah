@@ -151,6 +151,7 @@
     <ClInclude Include="HittablesList.h" />
     <ClInclude Include="Lightings.h" />
     <ClInclude Include="Hittables.h" />
+    <ClInclude Include="Materials.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vectors.h" />

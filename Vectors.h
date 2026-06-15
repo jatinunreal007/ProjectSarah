@@ -82,6 +82,12 @@ public:
 		}
 		return vec3(v.x / length, v.y / length, v.z / length);
 	}
+	bool Vec3NearZero() const
+	{
+		const float s = 1e-8;
+		return (std::fabs(x) < s) && (std::fabs(y) < s) && (std::fabs(z) < s);
+	}
+
 public:
 	float x, y, z;
 };
