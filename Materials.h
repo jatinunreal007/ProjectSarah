@@ -1,7 +1,6 @@
 #pragma once
 #include "Hittables.h"
-#include "Color.h"
-
+#include "Vectors.h"
 
 class materials
 {
@@ -17,9 +16,8 @@ public:
 class lambertian : public materials
 {
 public:
-	lambertian(const Color& albedo)
+	lambertian(const vec3& albedo)
 		: albedo(albedo) {}
-
 
 	bool scatter(const Ray& r, const HitRecord& rec, vec3& attenuation, Ray& scattered) const override
 	{
@@ -33,5 +31,23 @@ public:
 		return true;
 	}
 private:
-	Color albedo;
+	vec3 albedo;
+};
+
+class metal : public materials
+{
+public: 
+	metal(const vec3 albedo)
+		: albedo(albedo){}
+
+	bool scatter(const Ray& rIncident, const HitRecord& rec, vec3& attenuation, Ray& scattered) const override
+	{
+		vec3 refl = vec3().Reflect(rIncident.GetDirection(), rec.normal);
+		scattered = Ray(rec.point, refl);
+		attenuation = albedo;
+		return true;
+	}
+
+private:
+	vec3 albedo;	
 };

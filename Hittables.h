@@ -36,8 +36,8 @@ public:
 class Sphere : public Hittable
 {
 public:
-	Sphere(vec3 centre, float radius)
-		: centre(centre), radius(radius) {}
+	Sphere(vec3 centre, float radius, std::shared_ptr<materials> mat)
+		: centre(centre), radius(radius) , mat(mat){}
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
 	{
@@ -87,8 +87,8 @@ private:
 class Plane : public Hittable
 {
 public:
-	Plane(vec3 PassingPoint, vec3 normal)
-		: PassingPoint(PassingPoint), normal(vec3::Vec3Normalize(normal)) {}
+	Plane(vec3 PassingPoint, vec3 normal, std::shared_ptr<materials> mat)
+		: PassingPoint(PassingPoint), normal(vec3::Vec3Normalize(normal)), mat(mat) {}
 
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
@@ -109,11 +109,12 @@ public:
 		rec.point = r.GetOrigin() + r.GetDirection() * rec.t;
 		rec.normal = normal;
 		rec.color = (vec3(0.5f, 0.5f, 0.5f));
-
+		rec.mat = mat;
 		return true;
 	}
 	 
 private:
 	vec3 PassingPoint;
 	vec3 normal;
+	std::shared_ptr<materials> mat;
 };

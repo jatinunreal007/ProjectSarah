@@ -87,6 +87,10 @@ public:
 		const float s = 1e-8;
 		return (std::fabs(x) < s) && (std::fabs(y) < s) && (std::fabs(z) < s);
 	}
+	inline vec3 Reflect(const vec3& incident, const vec3& normal)
+	{
+		return incident - normal * 2 * Vec3Dot(incident, normal);
+	}
 
 public:
 	float x, y, z;

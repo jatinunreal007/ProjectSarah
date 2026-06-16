@@ -5,9 +5,11 @@
 class Ray
 {
 public:
+	Ray() {}
+
 	Ray(vec3 origin, vec3 direction)
-		: origin(origin), direction(direction) {
-	}
+		: origin(origin), direction(direction) {}
+
 	vec3 GetOrigin() const
 	{
 		return origin; 

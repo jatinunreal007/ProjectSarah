@@ -8,6 +8,7 @@
 #include<algorithm>
 #include "utilities.h"
 #include "HittablesList.h"
+#include "Materials.h"
 
 class Color:public vec3
 {
@@ -79,9 +80,15 @@ public:
 
 		if (scene.Hit(ray, 0.001f, infinity, rec))
 		{
-			vec3 dir = rec.normal + RandomUnitVec3();
-			vec3 Incomming =  RayColor(Ray(rec.point, dir), scene, pl1, MaxDepth - 1);
-			return Incomming * rec.color;
+			Ray scattered;
+			Color attenuation;
+
+			if (rec.mat->scatter(ray, rec, attenuation, scattered))
+			{
+				return attenuation * RayColor(scattered, scene, pl1, MaxDepth - 1);
+			}
+
+			return vec3(0.0f, 0.0f, 0.0f);
 		}
 	
 		vec3 UnitDirection = vec3().Vec3Normalize(ray.GetDirection());
