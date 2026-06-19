@@ -37,17 +37,19 @@ private:
 class metal : public materials
 {
 public: 
-	metal(const vec3 albedo)
-		: albedo(albedo){}
+	metal(const vec3 albedo, double fuzz)
+		: albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1){}
 
 	bool scatter(const Ray& rIncident, const HitRecord& rec, vec3& attenuation, Ray& scattered) const override
 	{
 		vec3 refl = vec3().Reflect(rIncident.GetDirection(), rec.normal);
+		refl = vec3().Vec3Normalize(refl) +  RandomUnitVec3() * fuzz;
 		scattered = Ray(rec.point, refl);
 		attenuation = albedo;
-		return true;
+		return vec3().Vec3Dot(scattered.GetDirection(), rec.normal);
 	}
 
 private:
 	vec3 albedo;	
+	double fuzz;
 };

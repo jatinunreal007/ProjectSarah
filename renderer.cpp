@@ -13,9 +13,9 @@ int main()
 	HittablesList scene;
 
 	auto MaterialGround = std::make_shared<lambertian>(Color(0.76, 0.76, 0.76));
-	auto MaterialS1 = std::make_shared<metal>(Color(0.95, 0.93, 0.88));
-	auto MaterialS2 = std::make_shared<metal>(Color(0.83, 0.55, 0.37));
-	auto MaterialS3 = std::make_shared<metal>(Color(1.0, 0.78, 0.34));
+	auto MaterialS1 = std::make_shared<metal>(Color(0.95, 0.93, 0.88),0.1);
+	auto MaterialS2 = std::make_shared<metal>(Color(0.83, 0.55, 0.37), 0.2);
+	auto MaterialS3 = std::make_shared<metal>(Color(1.0, 0.78, 0.34), 0.05);
 
 
 	//Objects--->
