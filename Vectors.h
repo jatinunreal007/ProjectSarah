@@ -1,5 +1,5 @@
 #pragma once
-#include<iostream>
+#include <iostream>
 #include "Algebra.h"
 
 class vec4
@@ -87,9 +87,17 @@ public:
 		const float s = 1e-8;
 		return (std::fabs(x) < s) && (std::fabs(y) < s) && (std::fabs(z) < s);
 	}
+
 	inline vec3 Reflect(const vec3& incident, const vec3& normal)
 	{
 		return incident - normal * 2 * Vec3Dot(incident, normal);
+	}
+	inline vec3 Refract(const vec3& UnitvecI, const vec3& normal, double InvRelRefIndex)
+	{
+		auto CosTheta = std::fmin(Vec3Dot(UnitvecI * -1, normal), 1.0);
+		vec3 Rperp = (UnitvecI + normal * CosTheta) * InvRelRefIndex;
+		vec3 Rpll = normal * -std::sqrt(std::fabs(1.0 - Vec3Dot(Rperp, Rperp)));
+		return Rperp + Rpll;
 	}
 
 public:

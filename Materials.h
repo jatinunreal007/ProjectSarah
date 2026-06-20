@@ -53,3 +53,24 @@ private:
 	vec3 albedo;	
 	double fuzz;
 };
+
+class Dielectric : public materials
+{
+public:
+	Dielectric(double refractiveIndex)
+		: refractiveIndex(refractiveIndex) {}
+
+	bool scatter(const Ray& rIncident, const HitRecord& rec, vec3& attenuation, Ray& scattered) const override
+	{
+		attenuation = vec3(1.0, 1.0, 1.0);
+		double RefractiveIndex = rec.frontFace ? 1 / refractiveIndex : refractiveIndex;
+		vec3 UnitDir = vec3().Vec3Normalize(rIncident.GetDirection());
+		vec3 Refracted = vec3().Refract(UnitDir, rec.normal, RefractiveIndex);
+		scattered = Ray(rec.point, Refracted);
+		return true;
+	}
+
+private:
+	double refractiveIndex;
+
+};

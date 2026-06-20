@@ -9,7 +9,7 @@ public:
 
 	};
 
-	float m4det()
+	float m2det()
 	{
 		float determinant = (a11 * a22) - (a12 * a21);
 		return determinant;

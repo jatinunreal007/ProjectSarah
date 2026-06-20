@@ -14,10 +14,10 @@ class Color:public vec3
 {
 public:
 	Color()
-		: vec3(0.0f, 0.0f, 0.0f) {}
+		:vec3(0.0f, 0.0f, 0.0f) {}
 
 	Color(float r, float g, float b)
-		: vec3(r, g, b) {}
+		: vec3(r,g,b) {}
 
 	std::string ColorOut(float r, float g, float b)
 	{
