@@ -113,7 +113,7 @@ private:
 	double ViewportWidth = 4.0;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 4.0f;
-	int SamplePerpixel = 1024;
+	int SamplePerpixel = 512;
 	double PixelSampleScale;
 	int MaxDepth = 50;
 

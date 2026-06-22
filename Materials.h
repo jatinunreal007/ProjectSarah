@@ -69,7 +69,7 @@ public:
 		double SinTheta = std::sqrt(1.0 - CosTheta * CosTheta);
 
 		vec3 dir;
-		if (RefractiveIndex * SinTheta > 1.0)
+		if (RefractiveIndex * SinTheta > 1.0 || Reflectance(CosTheta, RefractiveIndex) > RandomDouble())
 			dir = vec3().Reflect(UnitDir, rec.normal);
 
 		else
@@ -81,5 +81,12 @@ public:
 
 private:
 	double refractiveIndex;
+
+	static double Reflectance(double cos, double refindex)
+	{
+		auto rO = (1 - cos) / (1 + cos);
+		rO = rO * rO;
+		return rO + (1 - rO) * std::pow((1 - cos), 5);
+	}
 
 };
