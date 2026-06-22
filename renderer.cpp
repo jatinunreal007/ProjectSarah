@@ -16,7 +16,7 @@ int main()
 	auto MaterialS1 = std::make_shared<metal>(Color(0.95, 0.93, 0.88),0.05);
 	auto MaterialS2 = std::make_shared<metal>(Color(0.83, 0.55, 0.37), 0.1);
 	auto MaterialS3 = std::make_shared<metal>(Color(1.0, 0.78, 0.34), 0.0);
-	auto MaterialS4 = std::make_shared<Dielectric>(1.5f);
+	auto MaterialS4 = std::make_shared<Dielectric>(1.0f/1.33f);
 
 	//Objects--->
 	Sphere s1(vec3(-1.5f, 0.0f, 8.0f), 1.0f, MaterialS1);

@@ -65,8 +65,17 @@ public:
 		attenuation = vec3(1.0, 1.0, 1.0);
 		double RefractiveIndex = rec.frontFace ? 1 / refractiveIndex : refractiveIndex;
 		vec3 UnitDir = vec3().Vec3Normalize(rIncident.GetDirection());
-		vec3 Refracted = vec3().Refract(UnitDir, rec.normal, RefractiveIndex);
-		scattered = Ray(rec.point, Refracted);
+		double CosTheta = std::fmin(vec3().Vec3Dot(UnitDir * (-1), rec.normal), 1.0);
+		double SinTheta = std::sqrt(1.0 - CosTheta * CosTheta);
+
+		vec3 dir;
+		if (RefractiveIndex * SinTheta > 1.0)
+			dir = vec3().Reflect(UnitDir, rec.normal);
+
+		else
+			dir = vec3().Refract(UnitDir, rec.normal, RefractiveIndex);
+
+		scattered = Ray(rec.point, dir);
 		return true;
 	}
 
