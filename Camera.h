@@ -21,14 +21,20 @@ public:
 	{
 		return vec3(0.0, 0.0, 0.0);
 	}
-
-	
+	const void CameraSetImageWidth(int w)
+	{
+		ImageWidth = w;
+	}
+	const void CameraSetSamples(int s)
+	{
+		SamplePerpixel = s;
+	}
 
 	void InitializeViewport()
 	{
 
 		//Aspect Ratio of Viewport
-		ImageWidth = 1600;
+		//ImageWidth = 800;
 		ImageHeight = (int)(ImageWidth / aspectRatio);
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
@@ -113,7 +119,7 @@ private:
 	double ViewportWidth = 4.0;
 	double ViewportHeight = ViewportWidth / aspectRatio;
 	const float FocalLength = 4.0f;
-	int SamplePerpixel = 512;
+	int SamplePerpixel;
 	double PixelSampleScale;
 	int MaxDepth = 50;
 

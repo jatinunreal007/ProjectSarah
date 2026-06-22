@@ -41,6 +41,10 @@ int main()
 
 	//Camera--->
 	Camera c1;
+
+	c1.CameraSetImageWidth(1600);
+	c1.CameraSetSamples(1024);
+
 	std::cout << "Starting Render....\n";
 	c1.Render(scene, pl1);
 	
