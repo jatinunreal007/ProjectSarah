@@ -53,7 +53,18 @@ inline vec3 RandomUnitVec3OnSphere(const vec3 Normal)
 		return OnUnitSphere;
 	else
 		return OnUnitSphere * (-1.0); // we are doing this bcoz a ray cannot pass thorugh a matte solid object, refer to ms paint visualization
-
+}
+inline vec3 RandomUnitVec3OnDisk()
+{
+	while (true)
+	{
+		auto v = vec3(RandomDouble(-1, 1), RandomDouble(-1, 1), 0);
+		auto lensq = v.x * v.x + v.y * v.y + v.z * v.z;
+		if (lensq < 1)
+		{
+			return v;
+		}
+	}
 }
 
 

@@ -47,6 +47,14 @@ public:
 	{
 		Vup = vup;
 	}
+	const void CameraSetDefocusAngle(double angle)
+	{
+		DefocusAngle = angle;
+	}
+	const void CameraSetFocusDistance(double dist)
+	{
+		FocusDistance = dist;
+	}
 
 	void InitializeViewport()
 	{
@@ -61,10 +69,9 @@ public:
 		Centre = LookFrom;
 
 		//setting up Viewport Dimensions
-		FocalLength = vec3::Vec3Magnitude((LookFrom - LookAt));
 		auto theta = DegreesToRadians(Vfov);
 		auto h = std::tan(theta/2);
-	    ViewportHeight = 2 * h * FocalLength;
+	    ViewportHeight = 2 * h * FocusDistance;
 		ViewportWidth = ViewportHeight * ((double(ImageWidth) / double(ImageHeight)));
 
 		//Cam Orientation
@@ -82,9 +89,12 @@ public:
 		 VerticalDelta = (ViewportVertical / ImageHeight); // Negative bcoz we need to move downwards in the viewport to fill the rows
 
 		//Calculate the upper left corner of the viewport
-		 vec3 UpperLeftViewport = Centre - (w * FocalLength) - ViewportHorizontal/2 - ViewportVertical/2 ;
+		 vec3 UpperLeftViewport = Centre - (w * FocusDistance) - ViewportHorizontal/2 - ViewportVertical/2 ;
 		 UpperLeftPixel = (UpperLeftViewport)+(HorizontalDelta / 2.0f) + (VerticalDelta / 2.0f); // We need to move half a pixel right and half a pixel down to get the center of the upper left pixel
 
+		 auto DefocusRadius = FocusDistance * std::tan(DegreesToRadians(DefocusAngle) / 2);
+		 DefocusDiskX = u * DefocusRadius;
+		 DefocusDiskY = v * DefocusRadius;
 	}
 
     Ray GetRay(int row, int col)
@@ -93,13 +103,20 @@ public:
 		auto PixelSample = UpperLeftPixel
 			+ (HorizontalDelta * (col + offset.x))
 			+ (VerticalDelta * (row + offset.y));
-		auto RayDirection = PixelSample - CameraGetOrigin();
-		return Ray(CameraGetOrigin(), RayDirection);
+		auto RayOrigin = (DefocusAngle <= 0) ? Centre : DefocusDiskSample();
+		auto RayDirection = PixelSample - RayOrigin;
+		return Ray(RayOrigin, RayDirection);
 	}
 
 	vec3 SampleSquare()
 	{
 		return vec3(RandomDouble() - 0.5f, RandomDouble() - 0.5f, 0.0f);
+	}
+
+	vec3 DefocusDiskSample() const
+	{
+		auto v = RandomUnitVec3OnDisk();
+		return Centre + (DefocusDiskX * v.x) + (DefocusDiskY * v.y);
 	}
 	//Render function---->
 
@@ -152,7 +169,7 @@ private:
 	double ViewportWidth;
 	double ViewportHeight;
 	vec3 Centre;
-	float FocalLength = 2.0f;
+	float FocalLength;
 	int SamplePerpixel;
 	double PixelSampleScale;
 	int MaxDepth = 50;
@@ -164,10 +181,19 @@ private:
 
 	vec3 u, v, w;
 
+public:
+	double DefocusAngle;
+	double FocusDistance;
+
 private:
 	int ImageWidth;
 	int ImageHeight;
+
 	vec3 UpperLeftPixel;
+
 	vec3 HorizontalDelta;
 	vec3 VerticalDelta;
+
+	vec3 DefocusDiskX;
+	vec3 DefocusDiskY;
 };
