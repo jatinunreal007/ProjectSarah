@@ -4,6 +4,7 @@
 #include "Vectors.h"
 #include <chrono>
 
+double aspectRatio = 1.9 / 1.0;
 
 class Camera
 {
@@ -17,10 +18,6 @@ public:
 		return ViewportWidth;
 	}
 
-	const void CameraSetAspectRatio(const double ar)
-	{
-		aspectRatio = ar;
-	}
 	const vec3 CameraGetOrigin()
 	{
 		return Centre;
@@ -68,7 +65,7 @@ public:
 		auto theta = DegreesToRadians(Vfov);
 		auto h = std::tan(theta/2);
 	    ViewportHeight = 2 * h * FocalLength;
-		ViewportWidth = ViewportHeight * double((ImageWidth / ImageHeight));
+		ViewportWidth = ViewportHeight * ((double(ImageWidth) / double(ImageHeight)));
 
 		//Cam Orientation
 		w = vec3::Vec3Normalize(LookFrom - LookAt);
@@ -154,7 +151,6 @@ public:
 private:
 	double ViewportWidth;
 	double ViewportHeight;
-    double aspectRatio;
 	vec3 Centre;
 	float FocalLength = 2.0f;
 	int SamplePerpixel;

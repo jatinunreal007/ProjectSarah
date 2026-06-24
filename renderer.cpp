@@ -42,13 +42,12 @@ int main()
 	//Camera--->
 	Camera c1;
 
-	c1.CameraSetAspectRatio(1.9/1.0);
 	c1.CameraSetImageWidth(800);
-	c1.CameraSetSamples(512);
-	c1.CameraSetFov(10);
+	c1.CameraSetSamples(1024);
+	c1.CameraSetFov(12);
 
-	c1.CameraSetLookFrom(vec3(-5, 15, 50));
-	c1.CameraSetLookAt(vec3(1.5,0,-1.5));
+	c1.CameraSetLookFrom(vec3(-5, 20, 30));
+	c1.CameraSetLookAt(vec3(1,2,-1.5));
 	c1.CameraSetVup(vec3(0,1,0));
 
 	std::cout << "Starting Render....\n";
