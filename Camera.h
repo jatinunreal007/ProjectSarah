@@ -4,7 +4,6 @@
 #include "Vectors.h"
 #include <chrono>
 
-const double aspectRatio = 1.9 / 1.0;
 
 class Camera
 {
@@ -17,9 +16,14 @@ public:
 	{
 		return ViewportWidth;
 	}
+
+	const void CameraSetAspectRatio(const double ar)
+	{
+		aspectRatio = ar;
+	}
 	const vec3 CameraGetOrigin()
 	{
-		return vec3(0.0, 0.0, 0.0);
+		return Centre;
 	}
 	const void CameraSetImageWidth(int w)
 	{
@@ -29,10 +33,22 @@ public:
 	{
 		SamplePerpixel = s;
 	}
-
 	const void CameraSetFov(int fov)
 	{
 		Vfov = fov;
+	}
+	const void CameraSetLookFrom(const vec3& point)
+	{
+		LookFrom = point;
+	}
+
+	const void CameraSetLookAt(const vec3& dir)
+	{
+		LookAt = dir;
+	}
+	const void CameraSetVup(const vec3& vup)
+	{
+		Vup = vup;
 	}
 
 	void InitializeViewport()
@@ -45,21 +61,31 @@ public:
 
 		PixelSampleScale = 1.0 / SamplePerpixel;
 
+		Centre = LookFrom;
+
+		//setting up Viewport Dimensions
+		FocalLength = vec3::Vec3Magnitude((LookFrom - LookAt));
 		auto theta = DegreesToRadians(Vfov);
 		auto h = std::tan(theta/2);
 	    ViewportHeight = 2 * h * FocalLength;
 		ViewportWidth = ViewportHeight * double((ImageWidth / ImageHeight));
 
+		//Cam Orientation
+		w = vec3::Vec3Normalize(LookFrom - LookAt);
+		u = vec3::Vec3Normalize(vec3::Vec3Cross(Vup, w));
+		v = vec3::Vec3Cross(w, u);
+
+
 		//Calculate the Horizontal and Vertical Vectors of the viewport
-		 vec3 ViewportHorizontal = vec3(CameraGetWidth(), 0.0f, 0.0f);
-		 vec3 ViewportVertical = vec3(0.0f,-CameraGetHeight(), 0.0f);
+		vec3 ViewportHorizontal =  u * ViewportWidth;
+		vec3 ViewportVertical = v * ViewportHeight * (-1);
 
 		//Calculate the linear Deltas (i.e = small change or unit change) of the viewport
 		 HorizontalDelta = ViewportHorizontal / ImageWidth;
 		 VerticalDelta = (ViewportVertical / ImageHeight); // Negative bcoz we need to move downwards in the viewport to fill the rows
 
 		//Calculate the upper left corner of the viewport
-		 vec3 UpperLeftViewport = vec3(-CameraGetWidth() / 2.0f, CameraGetHeight() / 2.0f, FocalLength);
+		 vec3 UpperLeftViewport = Centre - (w * FocalLength) - ViewportHorizontal/2 - ViewportVertical/2 ;
 		 UpperLeftPixel = (UpperLeftViewport)+(HorizontalDelta / 2.0f) + (VerticalDelta / 2.0f); // We need to move half a pixel right and half a pixel down to get the center of the upper left pixel
 
 	}
@@ -128,11 +154,19 @@ public:
 private:
 	double ViewportWidth;
 	double ViewportHeight;
-	const float FocalLength = 2.0f;
+    double aspectRatio;
+	vec3 Centre;
+	float FocalLength = 2.0f;
 	int SamplePerpixel;
 	double PixelSampleScale;
 	int MaxDepth = 50;
+
 	double Vfov;
+	vec3 LookFrom = vec3(0, 0, 0);
+	vec3 LookAt = vec3(0,0,-1);
+	vec3 Vup = vec3(0, 1, 0);
+
+	vec3 u, v, w;
 
 private:
 	int ImageWidth;

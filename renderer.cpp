@@ -19,16 +19,16 @@ int main()
 	auto MaterialS4 = std::make_shared<Dielectric>(1.0f/1.33f);
 
 	//Objects--->
-	Sphere s1(vec3(-1.5f, 0.0f, 8.0f), 1.0f, MaterialS1);
+	Sphere s1(vec3(-1.5f, 0.0f, -2.0f), 1.0f, MaterialS1);
 	scene.Add(std::make_shared<Sphere>(s1));
 
-	Sphere s2(vec3(4.0f, 1.0f, 12.0f), 2.0f, MaterialS2);
+	Sphere s2(vec3(4.0f, 1.0f, -6.0f), 2.0f, MaterialS2);
 	scene.Add(std::make_shared<Sphere>(s2));
 
-	Sphere s3(vec3(-2.0f, -0.5f, 6.0f), 0.5f, MaterialS3);
+	Sphere s3(vec3(-2.0f, -0.5f, 0.0f), 0.5f, MaterialS3);
 	scene.Add(std::make_shared<Sphere>(s3));
 
-	Sphere s4(vec3(0.5f, 0.5f, 10.0f), 1.5f, MaterialS4);
+	Sphere s4(vec3(0.5f, 0.5f, -4.0f), 1.5f, MaterialS4);
 	scene.Add(std::make_shared<Sphere>(s4));
 
 	Plane p1(vec3(0.0f, -1.0f, -2.0f), vec3(0.0f, 1.0f, 0.0f), MaterialGround);
@@ -42,9 +42,14 @@ int main()
 	//Camera--->
 	Camera c1;
 
+	c1.CameraSetAspectRatio(1.9/1.0);
 	c1.CameraSetImageWidth(800);
-	c1.CameraSetSamples(16);
-	c1.CameraSetFov(50);
+	c1.CameraSetSamples(512);
+	c1.CameraSetFov(10);
+
+	c1.CameraSetLookFrom(vec3(-5, 15, 50));
+	c1.CameraSetLookAt(vec3(1.5,0,-1.5));
+	c1.CameraSetVup(vec3(0,1,0));
 
 	std::cout << "Starting Render....\n";
 	c1.Render(scene, pl1);
