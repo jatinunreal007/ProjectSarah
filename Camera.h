@@ -30,6 +30,11 @@ public:
 		SamplePerpixel = s;
 	}
 
+	const void CameraSetFov(int fov)
+	{
+		Vfov = fov;
+	}
+
 	void InitializeViewport()
 	{
 
@@ -39,6 +44,11 @@ public:
 		ImageHeight = (ImageHeight < 1) ? 1 : ImageHeight;
 
 		PixelSampleScale = 1.0 / SamplePerpixel;
+
+		auto theta = DegreesToRadians(Vfov);
+		auto h = std::tan(theta/2);
+	    ViewportHeight = 2 * h * FocalLength;
+		ViewportWidth = ViewportHeight * double((ImageWidth / ImageHeight));
 
 		//Calculate the Horizontal and Vertical Vectors of the viewport
 		 vec3 ViewportHorizontal = vec3(CameraGetWidth(), 0.0f, 0.0f);
@@ -54,12 +64,12 @@ public:
 
 	}
 
-    Ray GetRay(int j, int i)
+    Ray GetRay(int row, int col)
 	{
 		auto offset = SampleSquare();
 		auto PixelSample = UpperLeftPixel
-			+ (HorizontalDelta * (i + offset.x))
-			+ (VerticalDelta * (j + offset.y));
+			+ (HorizontalDelta * (col + offset.x))
+			+ (VerticalDelta * (row + offset.y));
 		auto RayDirection = PixelSample - CameraGetOrigin();
 		return Ray(CameraGetOrigin(), RayDirection);
 	}
@@ -116,12 +126,13 @@ public:
 	}
 
 private:
-	double ViewportWidth = 4.0;
-	double ViewportHeight = ViewportWidth / aspectRatio;
-	const float FocalLength = 4.0f;
+	double ViewportWidth;
+	double ViewportHeight;
+	const float FocalLength = 2.0f;
 	int SamplePerpixel;
 	double PixelSampleScale;
 	int MaxDepth = 50;
+	double Vfov;
 
 private:
 	int ImageWidth;

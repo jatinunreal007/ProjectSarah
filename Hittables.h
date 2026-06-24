@@ -2,6 +2,7 @@
 #include "Vectors.h"
 #include "Ray.h"
 #include "Lightings.h"
+#include "Utilities.h"
 
 class materials;
 

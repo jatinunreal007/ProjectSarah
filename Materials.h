@@ -43,7 +43,7 @@ public:
 	bool scatter(const Ray& rIncident, const HitRecord& rec, vec3& attenuation, Ray& scattered) const override
 	{
 		vec3 refl = vec3().Reflect(rIncident.GetDirection(), rec.normal);
-		refl = vec3().Vec3Normalize(refl) +  RandomUnitVec3() * fuzz;
+		refl = vec3::Vec3Normalize(refl) +  RandomUnitVec3() * fuzz;
 		scattered = Ray(rec.point, refl);
 		attenuation = albedo;
 		return vec3().Vec3Dot(scattered.GetDirection(), rec.normal);
@@ -64,7 +64,7 @@ public:
 	{
 		attenuation = vec3(1.0, 1.0, 1.0);
 		double RefractiveIndex = rec.frontFace ? 1 / refractiveIndex : refractiveIndex;
-		vec3 UnitDir = vec3().Vec3Normalize(rIncident.GetDirection());
+		vec3 UnitDir = vec3::Vec3Normalize(rIncident.GetDirection());
 		double CosTheta = std::fmin(vec3().Vec3Dot(UnitDir * (-1), rec.normal), 1.0);
 		double SinTheta = std::sqrt(1.0 - CosTheta * CosTheta);
 

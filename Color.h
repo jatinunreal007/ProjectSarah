@@ -1,11 +1,11 @@
 #pragma once
 
-#include<iostream>
+#include <iostream>
 #include "Vectors.h"
-#include<string>
+#include <string>
 #include "Ray.h"
 #include "Hittables.h"
-#include<algorithm>
+#include <algorithm>
 #include "utilities.h"
 #include "HittablesList.h"
 #include "Materials.h"
@@ -91,7 +91,7 @@ public:
 			return vec3(0.0f, 0.0f, 0.0f);
 		}
 	
-		vec3 UnitDirection = vec3().Vec3Normalize(ray.GetDirection());
+		vec3 UnitDirection = Vec3Normalize(ray.GetDirection());
 		float lerp = 0.5f * (UnitDirection.y + 1.0f); // Lerp is a linear interpolation function that takes in a value between 0 and 1 and returns a value between two other values. In this case, we are using it to interpolate between white and blue based on the y component of the unit direction vector.
 		// Here UnitDirection.y is from -1 to 1 , bcoz it is a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.
 		auto BlendColor = (vec3(1.0f, 1.0f, 1.0f) * (1.0f - lerp)) + (vec3(0.5f, 0.7f, 1.0f) * lerp);
