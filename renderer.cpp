@@ -6,6 +6,36 @@
 #include "HittablesList.h"
 #include "Materials.h"
 
+void ScatterRandomMaterial(HittablesList& scene)
+{
+
+	for (int i = 0; i < 100; i++)
+	{
+		auto MatChances = RandomDouble();
+		std::shared_ptr<materials> mat;
+
+		if (MatChances < 0.5)
+		{
+			auto albedo = RandomVec3() * RandomVec3();
+			mat = std::make_shared<lambertian>(albedo);
+			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0,1.0) * 8.0, 0.2, mat));
+		}
+		else if (MatChances >= 0.5 && MatChances < 0.85)
+		{
+			auto albedo = RandomVec3(0.5, 1);
+			auto fuzz = RandomVec3(0, 0.5);
+			mat = std::make_shared<metal>(albedo, 0.1);
+			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0, 1.0) * 8.0, 0.2, mat));
+		}
+		else
+		{
+			mat = std::make_shared<Dielectric>(1.5);
+			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0, 1.0) * 8.0, 0.2, mat));
+		}
+	}
+
+}
+
 
 int main()
 {
@@ -19,7 +49,7 @@ int main()
 	auto MaterialS4 = std::make_shared<Dielectric>(1.0f/1.33f);
 
 	//Objects--->
-	Sphere s1(vec3(-1.5f, 0.0f, 2.0f), 1.0f, MaterialS1);
+	Sphere s1(vec3(-1.5f, 0.0f, 2.0f), 1.0f,MaterialS1);
 	scene.Add(std::make_shared<Sphere>(s1));
 
 	Sphere s2(vec3(4.0f, 1.0f, -2.0f), 2.0f, MaterialS2);
@@ -34,6 +64,7 @@ int main()
 	Plane p1(vec3(0.0f, -1.0f, -2.0f), vec3(0.0f, 1.0f, 0.0f), MaterialGround);
 	scene.Add(std::make_shared<Plane>(p1));
 
+	ScatterRandomMaterial(scene);
 
 	//Lightings--->
 	Light pl1(vec3(-0.5f, 0.5f, 0.02f), 2.0f); //directional light

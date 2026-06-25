@@ -1,8 +1,12 @@
 #pragma once
 
+#include <execution>
+#include <cmath>
 #include "Ray.h"
 #include "Vectors.h"
 #include <chrono>
+#include <numeric>
+#include <iomanip>
 
 double aspectRatio = 1.9 / 1.0;
 
@@ -120,50 +124,116 @@ public:
 	}
 	//Render function---->
 
+	//void Render(const Hittable& scene, const Light& pl1)
+	//{
+
+	//	InitializeViewport();
+	//	std::ofstream render("render.ppm");
+
+
+	//	//Image Info Output--->
+	//	std::cout << "\nImage Width: " << ImageWidth << std::endl;
+	//	std::cout << "Image Height: " << ImageHeight << std::endl;
+
+	//	render << "P3\n" << ImageWidth << " " << ImageHeight << "\n255\n";
+
+	//	Camera c1;
+	//	Color ColorUtil;
+
+	//	auto start = std::chrono::high_resolution_clock::now();
+
+	//	for (int i = 0; i < ImageHeight; i++)
+	//	{
+	//		std::clog << "Rendering row " << i << "\n";
+	//		for (int j = 0; j < ImageWidth; j++)
+	//		{
+	//			Color PixelColor(0.0f, 0.0f, 0.0f);
+
+	//			for (int k = 0; k < SamplePerpixel; k++)
+	//			{
+	//				Ray r = GetRay(i, j);
+	//				PixelColor += ColorUtil.RayColor(r, scene, pl1, MaxDepth);
+	//				//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
+	//			}
+	//			ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
+	//		}
+
+	//	}
+
+
+
+	//	//Render Time Calculation--->
+	//	auto end = std::chrono::high_resolution_clock::now();
+	//	std::chrono::duration<float> elapsed = end - start;
+	//	std::cout << "\nRender completed!\n";
+	//	std::cout << "Time taken: " << elapsed.count() << " seconds.\n";
+
+	//	render.close();
+	//}
+
 	void Render(const Hittable& scene, const Light& pl1)
 	{
-
 		InitializeViewport();
-		std::ofstream render("render.ppm");
 
-
-		//Image Info Output--->
 		std::cout << "\nImage Width: " << ImageWidth << std::endl;
 		std::cout << "Image Height: " << ImageHeight << std::endl;
 
-		render << "P3\n" << ImageWidth << " " << ImageHeight << "\n255\n";
-
-		Camera c1;
+		std::vector<int> pixelBuffer(ImageWidth * ImageHeight * 3);
 		Color ColorUtil;
+		std::vector<int> rows(ImageHeight);
+		std::iota(rows.begin(), rows.end(), 0);
 
+		const Interval ci(0.0, 0.999);
+
+		std::atomic<int> rowsDone(0);  // thread-safe counter
 		auto start = std::chrono::high_resolution_clock::now();
 
-		for (int i = 0; i < ImageHeight; i++)
-		{
-			std::clog << "Rendering row " << i << "\n";
-			for (int j = 0; j < ImageWidth; j++)
+		std::for_each(std::execution::par, rows.begin(), rows.end(), [&](int i)
 			{
-				Color PixelColor(0.0f, 0.0f, 0.0f);
-
-				for (int k = 0; k < SamplePerpixel; k++)
+				for (int j = 0; j < ImageWidth; j++)
 				{
-					Ray r = GetRay(i, j);
-					PixelColor += ColorUtil.RayColor(r, scene, pl1, MaxDepth);
-					//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
+					Color PixelColor(0.0f, 0.0f, 0.0f);
+					for (int k = 0; k < SamplePerpixel; k++)
+					{
+						Ray r = GetRay(i, j);
+						PixelColor += ColorUtil.RayColor(r, scene, pl1, MaxDepth);
+					}
+
+					auto scaled = PixelColor * PixelSampleScale;
+					int idx = (i * ImageWidth + j) * 3;
+					pixelBuffer[idx] = int(256 * ci.clamp(std::sqrt(scaled.x)));
+					pixelBuffer[idx + 1] = int(256 * ci.clamp(std::sqrt(scaled.y)));
+					pixelBuffer[idx + 2] = int(256 * ci.clamp(std::sqrt(scaled.z)));
 				}
-				ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
-			}
 
-		}
+				// Each thread increments when its row finishes
+				int done = ++rowsDone;
+				if (done % 10 == 0 || done == ImageHeight)  // print every 10 rows to avoid spam
+				{
+					float percent = (float)done / ImageHeight * 100.0f;
+					auto now = std::chrono::high_resolution_clock::now();
+					float elapsed = std::chrono::duration<float>(now - start).count();
+					float eta = (elapsed / done) * (ImageHeight - done);
 
-		//Render Time Calculation--->
+					std::clog << std::fixed << std::setprecision(1)
+						<< percent << "% | Row " << done << "/" << ImageHeight
+						<< " | Elapsed: " << int(elapsed) << "s"
+						<< " | ETA: " << int(eta) << "s\n";
+				}
+			});
+
+		std::clog << "\n";
+
 		auto end = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<float> elapsed = end - start;
-		std::cout << "\nRender completed!\n";
-		std::cout << "Time taken: " << elapsed.count() << " seconds.\n";
+		float totalTime = std::chrono::duration<float>(end - start).count();
+		std::cout << "Render completed in " << totalTime << "s\n";
 
-		render.close();
+		std::ofstream render("render.ppm");
+		render << "P3\n" << ImageWidth << " " << ImageHeight << "\n255\n";
+		for (int i = 0; i < ImageWidth * ImageHeight; i++)
+			render << pixelBuffer[i * 3] << " " << pixelBuffer[i * 3 + 1] << " " << pixelBuffer[i * 3 + 2] << "\n";
 	}
+
 
 private:
 	double ViewportWidth;
