@@ -124,53 +124,6 @@ public:
 	}
 	//Render function---->
 
-	//void Render(const Hittable& scene, const Light& pl1)
-	//{
-
-	//	InitializeViewport();
-	//	std::ofstream render("render.ppm");
-
-
-	//	//Image Info Output--->
-	//	std::cout << "\nImage Width: " << ImageWidth << std::endl;
-	//	std::cout << "Image Height: " << ImageHeight << std::endl;
-
-	//	render << "P3\n" << ImageWidth << " " << ImageHeight << "\n255\n";
-
-	//	Camera c1;
-	//	Color ColorUtil;
-
-	//	auto start = std::chrono::high_resolution_clock::now();
-
-	//	for (int i = 0; i < ImageHeight; i++)
-	//	{
-	//		std::clog << "Rendering row " << i << "\n";
-	//		for (int j = 0; j < ImageWidth; j++)
-	//		{
-	//			Color PixelColor(0.0f, 0.0f, 0.0f);
-
-	//			for (int k = 0; k < SamplePerpixel; k++)
-	//			{
-	//				Ray r = GetRay(i, j);
-	//				PixelColor += ColorUtil.RayColor(r, scene, pl1, MaxDepth);
-	//				//std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
-	//			}
-	//			ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
-	//		}
-
-	//	}
-
-
-
-	//	//Render Time Calculation--->
-	//	auto end = std::chrono::high_resolution_clock::now();
-	//	std::chrono::duration<float> elapsed = end - start;
-	//	std::cout << "\nRender completed!\n";
-	//	std::cout << "Time taken: " << elapsed.count() << " seconds.\n";
-
-	//	render.close();
-	//}
-
 	void Render(const Hittable& scene, const Light& pl1)
 	{
 		InitializeViewport();
@@ -206,9 +159,9 @@ public:
 					pixelBuffer[idx + 2] = int(256 * ci.clamp(std::sqrt(scaled.z)));
 				}
 
-				// Each thread increments when its row finishes
+	
 				int done = ++rowsDone;
-				if (done % 10 == 0 || done == ImageHeight)  // print every 10 rows to avoid spam
+				if (done % 10 == 0 || done == ImageHeight)  
 				{
 					float percent = (float)done / ImageHeight * 100.0f;
 					auto now = std::chrono::high_resolution_clock::now();

@@ -9,7 +9,7 @@
 void ScatterRandomMaterial(HittablesList& scene)
 {
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		auto MatChances = RandomDouble();
 		std::shared_ptr<materials> mat;
@@ -18,19 +18,19 @@ void ScatterRandomMaterial(HittablesList& scene)
 		{
 			auto albedo = RandomVec3() * RandomVec3();
 			mat = std::make_shared<lambertian>(albedo);
-			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0,1.0) * 8.0, 0.2, mat));
+			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0,1.0) * 5.0, 0.2, mat));
 		}
 		else if (MatChances >= 0.5 && MatChances < 0.85)
 		{
 			auto albedo = RandomVec3(0.5, 1);
 			auto fuzz = RandomVec3(0, 0.5);
 			mat = std::make_shared<metal>(albedo, 0.1);
-			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0, 1.0) * 8.0, 0.2, mat));
+			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0, 1.0) * 5.0, 0.2, mat));
 		}
 		else
 		{
 			mat = std::make_shared<Dielectric>(1.5);
-			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0, 1.0) * 8.0, 0.2, mat));
+			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0, 1.0) * 5.0, 0.2, mat));
 		}
 	}
 
@@ -74,14 +74,14 @@ int main()
 	Camera c1;
 
 	c1.CameraSetImageWidth(1600);
-	c1.CameraSetSamples(1024);
+	c1.CameraSetSamples(512);
 	c1.CameraSetFov(16);
 
-	c1.CameraSetLookFrom(vec3(-2, 4, 20));
+	c1.CameraSetLookFrom(vec3(-2, 1, 20));
 	c1.CameraSetLookAt(vec3(0.5,0.5,0.0));
 	c1.CameraSetVup(vec3(0,1,0));
 
-	c1.CameraSetDefocusAngle(1.5);
+	c1.CameraSetDefocusAngle(1);
 	c1.CameraSetFocusDistance(20.8);
 
 	std::cout << "Starting Render....\n";
