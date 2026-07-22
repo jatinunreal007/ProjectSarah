@@ -99,5 +99,7 @@ public:
 		//return vec3(0.0f, 0.0f, 0.0f);	
 	}
 private:
-	float r,g,b;
+	float r = 0.0f;
+    float g = 0.0f;
+	float b = 0.0f;
 };

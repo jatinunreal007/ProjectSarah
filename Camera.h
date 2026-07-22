@@ -1,12 +1,11 @@
 #pragma once
 
-#include <execution>
 #include <cmath>
 #include "Ray.h"
 #include "Vectors.h"
 #include <chrono>
-#include <numeric>
-#include <iomanip>
+
+#define VEC3INIT vec3(0.0, 0.0, 0.0)
 
 double aspectRatio = 1.9 / 1.0;
 
@@ -104,12 +103,16 @@ public:
     Ray GetRay(int row, int col)
 	{
 		auto offset = SampleSquare();
+
 		auto PixelSample = UpperLeftPixel
 			+ (HorizontalDelta * (col + offset.x))
 			+ (VerticalDelta * (row + offset.y));
+
 		auto RayOrigin = (DefocusAngle <= 0) ? Centre : DefocusDiskSample();
 		auto RayDirection = PixelSample - RayOrigin;
-		return Ray(RayOrigin, RayDirection);
+		auto RayTime = RandomDouble(0.0, 1.0); 
+
+		return Ray(RayOrigin, RayDirection, RayTime);
 	}
 
 	vec3 SampleSquare()
@@ -170,34 +173,36 @@ public:
 
 
 private:
-	double ViewportWidth;
-	double ViewportHeight;
-	vec3 Centre;
-	float FocalLength;
-	int SamplePerpixel;
-	double PixelSampleScale;
+	double ViewportWidth = 0.0;
+	double ViewportHeight = 0.0;
+	vec3 Centre = VEC3INIT;
+	float FocalLength = 1.0;
+	int SamplePerpixel = 1;
+	double PixelSampleScale = 1.0;
 	int MaxDepth = 50;
 
-	double Vfov;
+	double Vfov = 90.0;
 	vec3 LookFrom = vec3(0, 0, 0);
 	vec3 LookAt = vec3(0,0,-1);
 	vec3 Vup = vec3(0, 1, 0);
 
-	vec3 u, v, w;
+	vec3 u = VEC3INIT;
+	vec3 v = VEC3INIT;
+	vec3 w = VEC3INIT;
 
 public:
-	double DefocusAngle;
-	double FocusDistance;
+	double DefocusAngle = 0.0;
+	double FocusDistance = 1.0;
 
 private:
-	int ImageWidth;
-	int ImageHeight;
+	int ImageWidth = 400;
+	int ImageHeight = 225;
 
-	vec3 UpperLeftPixel;
+	vec3 UpperLeftPixel = VEC3INIT;
 
-	vec3 HorizontalDelta;
-	vec3 VerticalDelta;
+	vec3 HorizontalDelta = VEC3INIT;
+	vec3 VerticalDelta = VEC3INIT;
 
-	vec3 DefocusDiskX;
-	vec3 DefocusDiskY;
+	vec3 DefocusDiskX = VEC3INIT;
+	vec3 DefocusDiskY = VEC3INIT;
 };

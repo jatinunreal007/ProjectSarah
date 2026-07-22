@@ -18,7 +18,9 @@ void ScatterRandomMaterial(HittablesList& scene)
 		{
 			auto albedo = RandomVec3() * RandomVec3();
 			mat = std::make_shared<lambertian>(albedo);
-			scene.Add(std::make_shared<Sphere>(RandomVec3(-1.0,1.0) * 5.0, 0.2, mat));
+			auto centre = RandomVec3(-1.0, 1.0) * 5.0;
+			auto centre2 = centre + vec3(0, RandomDouble(0, 0.5), 0);
+			scene.Add(std::make_shared<Sphere>(centre, centre2, 0.2, mat));
 		}
 		else if (MatChances >= 0.5 && MatChances < 0.85)
 		{
@@ -73,8 +75,8 @@ int main()
 	//Camera--->
 	Camera c1;
 
-	c1.CameraSetImageWidth(1600);
-	c1.CameraSetSamples(4);
+	c1.CameraSetImageWidth(800);
+	c1.CameraSetSamples(256);
 	c1.CameraSetFov(16);
 
 	c1.CameraSetLookFrom(vec3(-2, 1, 20));

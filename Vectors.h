@@ -17,7 +17,7 @@ public:
 	}
 
 protected:
-	float x, y, z, w;
+	double x, y, z, w;
 };
 
 class vec3
@@ -26,7 +26,7 @@ public:
 	vec3() 
 		: x(0), y(0), z(0) {}
 
-	vec3(float x, float y, float z)
+	vec3(double x, double y, double z)
 		: x(x), y(y), z(z) {}
 
 	vec3 operator-(const vec3& other) const
@@ -45,11 +45,11 @@ public:
 		z += other.z;
 		return *this;
 	}
-	vec3 operator*(float scalar) const
+	vec3 operator*(double scalar) const
 	{
 		return vec3(x * scalar, y * scalar, z * scalar);
 	}
-	vec3 operator/(float scalar) const
+	vec3 operator/(double scalar) const
 	{
 		return vec3(x / scalar, y / scalar, z / scalar);
 	}
@@ -57,14 +57,14 @@ public:
 	{
 		return vec3(x * other.x, y * other.y, z * other.z);
 	}
-	static float Vec3Dot(const vec3& v1, const vec3& v2)
+	static double Vec3Dot(const vec3& v1, const vec3& v2)
 	{
-		float result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+		double result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 		return result;
 	}
-	static float Vec3Magnitude(const vec3& v)
+	static double Vec3Magnitude(const vec3& v)
 	{
-		float magnitude = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+		double magnitude = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 		return magnitude;
 	}
 	static vec3 Vec3Cross(const vec3& v1, const vec3& v2)
@@ -101,5 +101,5 @@ public:
 	}
 
 public:
-	float x, y, z;
+	double x, y, z;
 };

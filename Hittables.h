@@ -11,10 +11,10 @@ class HitRecord
 public:
 	vec3 point;
 	vec3 normal;
-	double t;
+	double t = 0.0;
 	vec3 color;
 	std::shared_ptr<materials> mat;
-	bool frontFace;
+	bool frontFace = false;
 
 	void SetFaceNormal(const Ray& r, const vec3 OutwardNormal)
 	{
@@ -37,32 +37,40 @@ public:
 class Sphere : public Hittable
 {
 public:
-	Sphere(vec3 centre, float radius, std::shared_ptr<materials> mat)
-		: centre(centre), radius(radius) , mat(mat){}
+	Sphere(const vec3 c, double radius, std::shared_ptr<materials> mat)
+		: StaticCentre(c), centre(c, vec3(0.0,0.0,0.0)) , radius(radius), mat(mat) {
+	}
+
+	Sphere(const vec3 centre1, const vec3 centre2, double radius, std::shared_ptr<materials> mat)
+		: StaticCentre(centre1), centre(centre1, centre2 - centre1), radius(radius), mat(mat) {
+	}
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
 	{
-		vec3 OC = r.GetOrigin() - centre;
-		float a = vec3::Vec3Dot(r.GetDirection(), r.GetDirection());
-		float b = 2.0f * vec3::Vec3Dot(OC, r.GetDirection());
-		float c = vec3::Vec3Dot(OC, OC) - radius * radius;
-		float discriminant = (b * b) - (4 * a * c);
+		vec3 CurrentCentre = centre.at(r.GetTime());
+		vec3 OC = r.GetOrigin() - CurrentCentre;
+
+		double a = vec3::Vec3Dot(r.GetDirection(), r.GetDirection());
+		double b = 2.0 * vec3::Vec3Dot(OC, r.GetDirection());
+		double c = vec3::Vec3Dot(OC, OC) - radius * radius;
+		double discriminant = (b * b) - (4 * a * c);
 		auto sqrtDiscriminant = std::sqrt(discriminant);
-		if (discriminant < 0) 
+
+		if (discriminant < 0.0) 
 		{
 			return false;
 		}
-		auto root = (-b - sqrtDiscriminant) / (2.0f * a);
+		auto root = (-b - sqrtDiscriminant) / (2.0 * a);
 		if (root < tMin || root > tMax)
 		{
-			root = (-b + sqrtDiscriminant) / (2.0f * a);
+			root = (-b + sqrtDiscriminant) / (2.0 * a);
 
 			if (root < tMin || root > tMax)
 				return false;
 		}
 		rec.t = root;
 		rec.point = r.GetOrigin() + r.GetDirection() * rec.t;
-		rec.normal = (rec.point - centre) / radius;
+		rec.normal = (rec.point - CurrentCentre) / radius;
 		rec.color = (vec3(1.0, 0.3, 0.0));
 		rec.SetFaceNormal(r, rec.normal);
 		rec.mat = mat;
@@ -72,16 +80,17 @@ public:
 
 	vec3 SphereGetCentre() const
 	{
-		return centre;
+		return StaticCentre;
 	}
-	float SphereGetRadius() const
+	double SphereGetRadius() const
 	{
 		return radius;
 	}
 
 private:
-	vec3 centre;
-	float radius;
+	Ray centre;
+	vec3 StaticCentre;
+	double radius;
 	std::shared_ptr<materials> mat;
 };
 
@@ -107,7 +116,7 @@ public:
 		}
 		
 		rec.t = t;
-		rec.point = r.GetOrigin() + r.GetDirection() * rec.t;
+		rec.point = r.at(t);
 		rec.normal = normal;
 		rec.color = (vec3(0.5f, 0.5f, 0.5f));
 		rec.mat = mat;

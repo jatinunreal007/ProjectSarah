@@ -26,7 +26,7 @@ public:
 		if (scatterDirection.Vec3NearZero())
 			scatterDirection = rec.normal;
 
-		scattered = Ray(rec.point, scatterDirection);
+		scattered = Ray(rec.point, scatterDirection, r.GetTime());
 		attenuation = albedo;
 		return true;
 	}
@@ -44,9 +44,9 @@ public:
 	{
 		vec3 refl = vec3().Reflect(rIncident.GetDirection(), rec.normal);
 		refl = vec3::Vec3Normalize(refl) +  RandomUnitVec3() * fuzz;
-		scattered = Ray(rec.point, refl);
+		scattered = Ray(rec.point, refl, rIncident.GetTime());
 		attenuation = albedo;
-		return vec3().Vec3Dot(scattered.GetDirection(), rec.normal);
+		return vec3::Vec3Dot(scattered.GetDirection(), rec.normal) > 0;
 	}
 
 private:
@@ -75,7 +75,7 @@ public:
 		else
 			dir = vec3().Refract(UnitDir, rec.normal, RefractiveIndex);
 
-		scattered = Ray(rec.point, dir);
+		scattered = Ray(rec.point, dir, rIncident.GetTime());
 		return true;
 	}
 
