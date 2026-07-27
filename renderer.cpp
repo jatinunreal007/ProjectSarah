@@ -76,7 +76,7 @@ int main()
 	Camera c1;
 
 	c1.CameraSetImageWidth(800);
-	c1.CameraSetSamples(256);
+	c1.CameraSetSamples(64);
 	c1.CameraSetFov(16);
 
 	c1.CameraSetLookFrom(vec3(-2, 1, 20));
