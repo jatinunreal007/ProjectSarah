@@ -71,6 +71,11 @@ inline vec3 RandomUnitVec3OnDisk()
 class Interval
 {
 public:
+	Interval()
+		: min(-infinity), max(infinity)
+	{
+	}
+
 	Interval(double min, double max)
 		: min(min), max(max)
 	{
@@ -83,6 +88,30 @@ public:
 	double clamp(double val) const
 	{
 		return val < min ? min : val > max ? max : val;
+	}
+
+	const double& GetMin() const 
+	{ 
+		return min; 
+	}
+	const double& GetMax() const
+	{
+		return max; 
+	}
+	const void SetMin(double newMin)
+	{
+		min = newMin;
+		
+	}
+	const void SetMax(double newMax)
+	{
+		max = newMax;
+		
+	}
+	Interval expand(const double delta) const
+	{
+		auto padding = delta / 2.0;
+		return Interval(min - padding, max + padding);
 	}
 
 private:

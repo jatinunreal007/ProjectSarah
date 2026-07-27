@@ -57,6 +57,20 @@ public:
 	{
 		return vec3(x * other.x, y * other.y, z * other.z);
 	}
+
+	double operator[](int i) const 
+	{
+		if (i == 0) return x;
+		else if (i == 1) return y;
+		else if (i == 2) return z;
+	}       
+	double& operator[](int i) 
+	{
+		if (i == 0) return x;
+		else if (i == 1) return y;
+		else if (i == 2) return z;
+	}
+
 	static double Vec3Dot(const vec3& v1, const vec3& v2)
 	{
 		double result = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
