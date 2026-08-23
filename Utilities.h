@@ -13,17 +13,24 @@ inline double DegreesToRadians(double degrees) {
 
 const double infinity = std::numeric_limits<double>::infinity();
 
-inline double RandomDouble() {
-    static std::random_device rd; //remove static when we will move to multithreading, bcoz static will be shared across threads and will cause data
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<double> DoubleDist(0.0, 1.0);
+inline double RandomDouble() 
+{
+	static std::mt19937 gen(std::random_device{}());
+	static std::uniform_real_distribution<double> DoubleDist(0.0, 1.0);
 	return DoubleDist(gen);
 }
 
-inline double RandomDouble(double min, double max) {
-    static std::random_device rd;
-    std::mt19937 gen(rd());
+inline double RandomDouble(double min, double max) 
+{
+	static std::mt19937 gen(std::random_device{}());
 	std::uniform_real_distribution<double> DoubleDist(min, max);
+	return DoubleDist(gen);
+}
+
+inline double RandomInt(int min, int max) 
+{
+	static std::mt19937 gen(std::random_device{}());
+	std::uniform_int_distribution<int> DoubleDist(min, max);
 	return DoubleDist(gen);
 }
 
@@ -81,7 +88,7 @@ public:
 	{
 	}
 
-	Interval(const Interval& i1, const Interval& i2)
+	Interval(const Interval i1, const Interval i2)
 		: min(std::min(i1.min, i2.min)), max(std::max(i1.max, i2.max))
 	{
 	}

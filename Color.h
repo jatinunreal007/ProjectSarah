@@ -77,8 +77,8 @@ public:
 		//	float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
 		//	return rec.color * FinalColorFactor * pl1.PLightGetIntensity();
 		//}
-
-		if (scene.Hit(ray, 0.001f, infinity, rec))
+		Interval RayInit(0.0001, infinity);
+		if (scene.Hit(ray,RayInit, rec))
 		{
 			Ray scattered;
 			Color attenuation;

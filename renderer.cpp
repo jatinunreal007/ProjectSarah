@@ -5,6 +5,8 @@
 #include "utilities.h"
 #include "HittablesList.h"
 #include "Materials.h"
+#include "Bvh.h"
+
 
 void ScatterRandomMaterial(HittablesList& scene)
 {
@@ -44,7 +46,7 @@ int main()
 {
 
 	HittablesList scene;
-
+	
 	auto MaterialGround = std::make_shared<lambertian>(Color(0.76, 0.76, 0.76));
 	auto MaterialS1 = std::make_shared<metal>(Color(0.95, 0.93, 0.88),0.05);
 	auto MaterialS2 = std::make_shared<metal>(Color(0.83, 0.55, 0.37), 0.1);
@@ -72,12 +74,12 @@ int main()
 	//Lightings--->
 	Light pl1(vec3(-0.5f, 0.5f, 0.02f), 2.0f); //directional light
 
-
+	BvhNode Bvh(scene);
 	//Camera--->
 	Camera c1;
 
-	c1.CameraSetImageWidth(800);
-	c1.CameraSetSamples(4);
+	c1.CameraSetImageWidth(1600);
+	c1.CameraSetSamples(1024);
 	c1.CameraSetFov(16);
 
 	c1.CameraSetLookFrom(vec3(-2, 1, 20));
@@ -90,7 +92,7 @@ int main()
 	std::cout << "Starting Render....\n";
 
 
-	c1.Render(scene, pl1);
+	c1.Render(Bvh, pl1);
 	
 	std::cin.get();
 }

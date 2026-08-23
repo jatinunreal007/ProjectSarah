@@ -13,7 +13,7 @@ public:
 	{
 	}
 
-	AABB(const Interval& ix, const Interval& iy, const Interval& iz)
+	AABB(const Interval ix, const Interval iy, const Interval iz)
 		: x(ix), y(iy), z(iz)
 	{
 	}
@@ -32,7 +32,7 @@ public:
 		z = Interval(box1.z, box2.z);
 	}
 
-	const Interval& AxisInterval(int axis) const
+	const Interval AxisInterval(int axis) const
 	{
 		switch (axis)
 		{
@@ -46,14 +46,14 @@ public:
 			throw std::out_of_range("Invalid axis index");
 		}
 	}
-	bool Hit(const Ray& r, Interval& ray_t) const
+	bool Hit(const Ray& r, Interval ray_t) const
 	{
 		const vec3 RayOrigin = r.GetOrigin();
 		const vec3 RayDirection = r.GetDirection();
 
 		for (int axis = 0; axis < 3; axis++)
 		{
-			const Interval& ax = AxisInterval(axis);
+			const Interval ax = AxisInterval(axis);
 			const double InvAxisDir = 1.0 /RayDirection[axis];
 
 			auto t0 = (ax.GetMin() - RayOrigin[axis]) * InvAxisDir;

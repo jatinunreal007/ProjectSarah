@@ -30,7 +30,7 @@ class Hittable
 {
 public:
 	virtual ~Hittable() = default;
-	virtual bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const = 0;
+	virtual bool Hit(const Ray& r, Interval ray_t, HitRecord& rec) const = 0;
 	virtual AABB BoundingBox() const = 0;
 };
 
@@ -56,7 +56,7 @@ public:
 
 	}
 
-	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
+	bool Hit(const Ray& r, Interval ray_t, HitRecord& rec) const override
 	{
 		vec3 CurrentCentre = centre.at(r.GetTime());
 		vec3 OC = r.GetOrigin() - CurrentCentre;
@@ -72,11 +72,11 @@ public:
 			return false;
 		}
 		auto root = (-b - sqrtDiscriminant) / (2.0 * a);
-		if (root < tMin || root > tMax)
+		if (root < ray_t.GetMin() || root > ray_t.GetMax())
 		{
 			root = (-b + sqrtDiscriminant) / (2.0 * a);
 
-			if (root < tMin || root > tMax)
+			if (root < ray_t.GetMin() || root > ray_t.GetMax())
 				return false;
 		}
 		rec.t = root;
@@ -121,7 +121,7 @@ public:
 	}
 
 
-	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
+	bool Hit(const Ray& r, Interval ray_t, HitRecord& rec) const override
 	{
 		float A = vec3::Vec3Dot(normal, r.GetDirection());
 		float B = vec3::Vec3Dot(normal, PassingPoint - r.GetOrigin());
@@ -130,7 +130,7 @@ public:
 		if (A == 0)
 			return false;
 
-		if (t < tMin || t > tMax)
+		if (t < ray_t.GetMin() || t > ray_t.GetMax())
 		{
 			return false;
 		}

@@ -21,15 +21,15 @@ public:
 		bbox = AABB(bbox, object->BoundingBox());
 	}
 
-	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
+	bool Hit(const Ray& r, Interval ray_t, HitRecord& rec) const override
 	{
 		HitRecord tempRec;
 		bool hitAnything = false;
-		auto closestSoFar = tMax;
+		auto closestSoFar = ray_t.GetMax();
 
 		for (const auto& object : objects)
 		{
-			if (object->Hit(r, tMin, closestSoFar, tempRec))
+			if (object->Hit(r, ray_t, tempRec))
 			{
 				hitAnything = true;
 				closestSoFar = tempRec.t;
