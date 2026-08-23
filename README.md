@@ -4,6 +4,6 @@ RayTracing renderer from Scratch
 
 Reference : *RayTracing in One Weekend* by Peter Shirley
 
-Render till now[22-07-2026] -->
+Render till now[23-08-2026] -->
 
-<img width="1600" height="842" alt="SphereRender12(512)" src="https://github.com/user-attachments/assets/792661ec-1e70-4700-bd03-c9e8bd27e55f" />
+<img width="3840" height="2021" alt="SphereRender13(1024)" src="https://github.com/user-attachments/assets/aad89c50-2d0b-4cf4-9ade-bf08a350e46a" />
