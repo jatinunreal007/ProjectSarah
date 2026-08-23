@@ -93,6 +93,6 @@ int main()
 
 
 	c1.Render(Bvh, pl1);
-	
+	//Git check
 	std::cin.get();
 }
