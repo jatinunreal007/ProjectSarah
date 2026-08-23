@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "ProjectSarah\\x64\\Release\\Color.obj",
+            "outputs": [
+                "ProjectSarah\\x64\\Release\\Color.h.obj.dt.module.json",
+                "ProjectSarah\\x64\\Release\\Color.h.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

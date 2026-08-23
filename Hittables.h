@@ -3,6 +3,7 @@
 #include "Ray.h"
 #include "Lightings.h"
 #include "Utilities.h"
+#include "Aabb.h"
 
 class materials;
 
@@ -30,6 +31,7 @@ class Hittable
 public:
 	virtual ~Hittable() = default;
 	virtual bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const = 0;
+	virtual AABB BoundingBox() const = 0;
 };
 
 
@@ -38,11 +40,20 @@ class Sphere : public Hittable
 {
 public:
 	Sphere(const vec3 c, double radius, std::shared_ptr<materials> mat)
-		: StaticCentre(c), centre(c, vec3(0.0,0.0,0.0)) , radius(radius), mat(mat) {
+		: StaticCentre(c), centre(c, vec3(0.0,0.0,0.0)) , radius(radius), mat(mat) 
+	{
+		auto rvec = vec3(radius, radius, radius);
+		bbox = AABB(StaticCentre - rvec, StaticCentre + rvec);
 	}
 
 	Sphere(const vec3 centre1, const vec3 centre2, double radius, std::shared_ptr<materials> mat)
-		: StaticCentre(centre1), centre(centre1, centre2 - centre1), radius(radius), mat(mat) {
+		: StaticCentre(centre1), centre(centre1, centre2 - centre1), radius(radius), mat(mat) 
+	{
+		auto rvec = vec3(radius, radius, radius);
+		auto bbox1 = AABB(centre.at(0) - rvec, centre.at(0) + rvec);
+		auto bbox2 = AABB(centre.at(1) - rvec, centre.at(1) + rvec);
+		bbox = AABB(bbox1, bbox2);
+
 	}
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
@@ -78,6 +89,11 @@ public:
 
 	}
 
+	AABB BoundingBox() const override
+	{
+		return bbox;
+	}
+
 	vec3 SphereGetCentre() const
 	{
 		return StaticCentre;
@@ -91,6 +107,7 @@ private:
 	Ray centre;
 	vec3 StaticCentre;
 	double radius;
+	AABB bbox;
 	std::shared_ptr<materials> mat;
 };
 
@@ -98,7 +115,10 @@ class Plane : public Hittable
 {
 public:
 	Plane(vec3 PassingPoint, vec3 normal, std::shared_ptr<materials> mat)
-		: PassingPoint(PassingPoint), normal(vec3::Vec3Normalize(normal)), mat(mat) {}
+		: PassingPoint(PassingPoint), normal(vec3::Vec3Normalize(normal)), mat(mat) 
+	{
+		bbox = AABB();
+	}
 
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
@@ -122,9 +142,15 @@ public:
 		rec.mat = mat;
 		return true;
 	}
+
+	AABB BoundingBox() const override
+	{
+		return bbox;
+	}
 	 
 private:
 	vec3 PassingPoint;
 	vec3 normal;
+	AABB bbox;
 	std::shared_ptr<materials> mat;
 };

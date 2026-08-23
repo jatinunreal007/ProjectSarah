@@ -17,7 +17,8 @@ public:
 
 	void Add(std::shared_ptr<Hittable> object)
 	{
-		objects.push_back(object);
+		objects.emplace_back(object);
+		bbox = AABB(bbox, object->BoundingBox());
 	}
 
 	bool Hit(const Ray& r, float tMin, float tMax, HitRecord& rec) const override
@@ -38,4 +39,12 @@ public:
 
 		return hitAnything;
 	}
+
+	AABB BoundingBox() const override
+	{
+		return bbox;
+	}
+
+private:
+	AABB bbox;
 };

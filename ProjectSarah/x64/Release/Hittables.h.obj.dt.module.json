@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "ProjectSarah\\x64\\Release\\Hittables.obj",
+            "outputs": [
+                "ProjectSarah\\x64\\Release\\Hittables.h.obj.dt.module.json",
+                "ProjectSarah\\x64\\Release\\Hittables.h.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

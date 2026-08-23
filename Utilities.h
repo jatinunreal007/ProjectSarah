@@ -81,6 +81,11 @@ public:
 	{
 	}
 
+	Interval(const Interval& i1, const Interval& i2)
+		: min(std::min(i1.min, i2.min)), max(std::max(i1.max, i2.max))
+	{
+	}
+
 	bool surrounds(double x) const {
 		return min < x && x < max;
 	}

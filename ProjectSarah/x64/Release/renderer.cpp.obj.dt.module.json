@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "ProjectSarah\\x64\\Release\\renderer.obj",
+            "outputs": [
+                "ProjectSarah\\x64\\Release\\renderer.cpp.obj.dt.module.json",
+                "ProjectSarah\\x64\\Release\\renderer.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

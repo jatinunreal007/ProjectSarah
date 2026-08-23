@@ -25,6 +25,13 @@ public:
 		z = Interval(std::fmin(a.z, b.z), std::fmax(a.z, b.z));
 	}
 
+	AABB(const AABB& box1, const AABB& box2)
+	{
+		x = Interval(box1.x, box2.x);
+		y = Interval(box1.y, box2.y);
+		z = Interval(box1.z, box2.z);
+	}
+
 	const Interval& AxisInterval(int axis) const
 	{
 		switch (axis)

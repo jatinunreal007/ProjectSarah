@@ -39,6 +39,7 @@ void ScatterRandomMaterial(HittablesList& scene)
 }
 
 
+
 int main()
 {
 
@@ -76,7 +77,7 @@ int main()
 	Camera c1;
 
 	c1.CameraSetImageWidth(800);
-	c1.CameraSetSamples(64);
+	c1.CameraSetSamples(4);
 	c1.CameraSetFov(16);
 
 	c1.CameraSetLookFrom(vec3(-2, 1, 20));
@@ -87,6 +88,8 @@ int main()
 	c1.CameraSetFocusDistance(20.8);
 
 	std::cout << "Starting Render....\n";
+
+
 	c1.Render(scene, pl1);
 	
 	std::cin.get();
