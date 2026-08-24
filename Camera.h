@@ -7,7 +7,7 @@
 
 #define VEC3INIT vec3(0.0, 0.0, 0.0)
 
-double aspectRatio = 1.9 / 1.0;
+double aspectRatio = 1.9;
 
 class Camera
 {
