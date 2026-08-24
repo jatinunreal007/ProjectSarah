@@ -1,9 +1,32 @@
-  . v s / 
- 
- 
-.ppm
+# Visual Studio build output
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
 .vs/
-*.ipch
+
+# Object & intermediate files
 *.obj
+*.ipch
+*.iobj
+*.ipdb
 *.tlog
 *.log
+*.recipe
+*.command
+
+# Debug symbols / binaries
+*.pdb
+*.ilk
+*.idb
+*.exe
+*.dll
+*.enc
+
+# Personal IDE settings (not shared config)
+*.vcxproj.user
+*.suo
+*.user
+
+# Generated renders
+*.ppm
