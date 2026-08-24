@@ -2,9 +2,9 @@
 
 A physically-based ray tracer built from scratch in C++, following along with and extending *Ray Tracing in One Weekend* by Peter Shirley.
 
-<img width="3840" height="2021" alt="ProjectSarah render" src="https://github.com/user-attachments/assets/aad89c50-2d0b-4cf4-9ade-bf08a350e46a" />
+<img width="4096" height="2155" alt="SphereRender14(512)" src="https://github.com/user-attachments/assets/4c82bbf7-a72a-42e4-956c-2579204adc4d" />
 
-*Render as of 23-08-2026*
+*Render as of 24-08-2026*
 
 ## Features
 
