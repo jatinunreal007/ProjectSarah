@@ -1,7 +1,7 @@
 #pragma once
+
 #include "Vectors.h"
 #include "Ray.h"
-//#include "Lightings.h"
 #include "Utilities.h"
 #include "Aabb.h"
 
@@ -13,7 +13,8 @@ public:
 	vec3 point;
 	vec3 normal;
 	double t = 0.0;
-	double u, v;
+	double u = 0.0;
+	double v = 0.0;
 	vec3 color;
 	std::shared_ptr<materials> mat;
 	bool frontFace = false;
@@ -124,10 +125,10 @@ public:
 
 	bool Hit(const Ray& r, Interval ray_t, HitRecord& rec) const override
 	{
-		float A = vec3::Vec3Dot(normal, r.GetDirection());
-		float B = vec3::Vec3Dot(normal, PassingPoint - r.GetOrigin());
+		double A = vec3::Vec3Dot(normal, r.GetDirection());
+		double B = vec3::Vec3Dot(normal, PassingPoint - r.GetOrigin());
 
-		float t = B / A;
+		double t = B / A;
 		if (A == 0)
 			return false;
 

@@ -15,7 +15,7 @@ public:
 
 	BvhNode(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end)
 	{
-		int axis = RandomInt(0, 2);
+		int axis = static_cast<int>(RandomInt(0, 2));
 		auto  compare = (axis == 0) ? xBoxCompare : (axis == 1) ? yBoxCompare : zBoxCompare;
 
 		size_t ObjectSpan = end - start;

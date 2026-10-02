@@ -62,13 +62,13 @@ public:
 	{
 		if (i == 0) return x;
 		else if (i == 1) return y;
-		else if (i == 2) return z;
+		else  return z;
 	}       
 	double& operator[](int i) 
 	{
 		if (i == 0) return x;
 		else if (i == 1) return y;
-		else if (i == 2) return z;
+		else return z;
 	}
 
 	static double Vec3Dot(const vec3& v1, const vec3& v2)
@@ -90,7 +90,7 @@ public:
 
 	static vec3 Vec3Normalize(const vec3& v)
 	{
-		float length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+		double length = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 		if (length == 0) {
 			return vec3(0, 0, 0); 
 		}
@@ -98,7 +98,7 @@ public:
 	}
 	bool Vec3NearZero() const
 	{
-		const float s = 1e-8;
+		const double s = 1e-8;
 		return (std::fabs(x) < s) && (std::fabs(y) < s) && (std::fabs(z) < s);
 	}
 

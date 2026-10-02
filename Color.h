@@ -3,13 +3,8 @@
 #include <iostream>
 #include "Vectors.h"
 #include <string>
-#include "Ray.h"
-#include "Hittables.h"
 #include <algorithm>
 #include "utilities.h"
-#include "HittablesList.h"
-#include "Materials.h"
-#include "Lightings.h"
 
 class Color:public vec3
 {
@@ -17,7 +12,7 @@ public:
 	Color()
 		:vec3(0.0f, 0.0f, 0.0f) {}
 
-	Color(float r, float g, float b)
+	Color(double r, double g, double b)
 		: vec3(r,g,b) {}
 
 	std::string ColorOut(float r, float g, float b)
@@ -64,43 +59,6 @@ public:
 		vec3 colour = vec3(color.x * 255.0f, color.y * 255.0f, color.z * 255.0f);
 		return colour;
 	}
-	//Finalising Color of the Objects--->
-	vec3 RayColor(const Ray& ray, const Hittable& scene, Light& pl1, int MaxDepth)
-	{
-		if(MaxDepth <= 0)
-			return vec3(0.0f, 0.0f, 0.0f);
-
-		HitRecord rec;
-
-		//if (scene.Hit(ray,0.0f, infinity, rec))
-		//{
-		//	vec3 Normal = (rec.normal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f; // from a range of -1 to 1 to a range of 0 to 1 to use it as a color. 
-		//	float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
-		//	return rec.color * FinalColorFactor * pl1.PLightGetIntensity();
-		//}
-		Interval RayInit(0.0001, infinity);
-		if (scene.Hit(ray,RayInit, rec))
-		{
-			Ray scattered;
-			Color attenuation;
-
-			if (rec.mat->scatter(ray, rec, attenuation, scattered))
-			{
-				return attenuation * RayColor(scattered, scene, pl1, MaxDepth - 1);
-			}
-
-			return vec3(0.0f, 0.0f, 0.0f);
-		}
 	
-		vec3 UnitDirection = Vec3Normalize(ray.GetDirection());
-		float lerp = 0.5f * (UnitDirection.y + 1.0f); // Lerp is a linear interpolation function that takes in a value between 0 and 1 and returns a value between two other values. In this case, we are using it to interpolate between white and blue based on the y component of the unit direction vector.
-		// Here UnitDirection.y is from -1 to 1 , bcoz it is a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.
-		auto BlendColor = (vec3(1.0f, 1.0f, 1.0f) * (1.0f - lerp)) + (vec3(0.5f, 0.7f, 1.0f) * lerp);
-		return BlendColor;
-		//return vec3(0.0f, 0.0f, 0.0f);	
-	}
 private:
-	float r = 0.0f;
-    float g = 0.0f;
-	float b = 0.0f;
 };

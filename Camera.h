@@ -4,6 +4,12 @@
 #include "Ray.h"
 #include "Vectors.h"
 #include <chrono>
+#include <fstream>
+#include "Utilities.h"
+#include "Hittables.h"
+#include "Materials.h"
+#include "Lightings.h"
+#include "Color.h"
 
 #define VEC3INIT vec3(0.0, 0.0, 0.0)
 
@@ -154,7 +160,7 @@ public:
                         for (int k = 0; k < SamplePerpixel; k++)
                         {
                                 Ray r = GetRay(i, j);
-                                PixelColor += ColorUtil.RayColor(r, scene, pl1, MaxDepth);
+                                PixelColor += RayColor(r, scene, pl1, MaxDepth);
                                 //std::cout<<ColorUtil.ColorOut(PixelColor)<<std::endl;
                         }
                         ColorUtil.ColorOut(render, PixelColor * PixelSampleScale);
@@ -170,6 +176,46 @@ public:
 
         render.close();
     }
+
+	double DefocusAngle = 0.0;
+	double FocusDistance = 1.0;
+
+private:
+	vec3 RayColor(const Ray& ray, const Hittable& scene, Light& pl1, int MaxDepth)
+	{
+		if (MaxDepth <= 0)
+			return vec3(0.0f, 0.0f, 0.0f);
+
+		HitRecord rec;
+
+		//if (scene.Hit(ray,0.0f, infinity, rec))
+		//{
+		//	vec3 Normal = (rec.normal + vec3(1.0f, 1.0f, 1.0f)) * 0.5f; // from a range of -1 to 1 to a range of 0 to 1 to use it as a color. 
+		//	float FinalColorFactor = vec3::Vec3Dot(Normal, pl1.PLightGetDirection());
+		//	return rec.color * FinalColorFactor * pl1.PLightGetIntensity();
+		//}
+		Interval RayInit(0.0001, infinity);
+		if (scene.Hit(ray, RayInit, rec))
+		{
+			Ray scattered;
+			Color attenuation;
+
+			if (rec.mat->scatter(ray, rec, attenuation, scattered))
+			{
+				return attenuation * RayColor(scattered, scene, pl1, MaxDepth - 1);
+			}
+
+			return vec3(0.0f, 0.0f, 0.0f);
+		}
+
+		vec3 UnitDirection = vec3::Vec3Normalize(ray.GetDirection());
+
+		double lerp = 0.5f * (UnitDirection.y + 1.0f); // Lerp is a linear interpolation function that takes in a value between 0 and 1 and returns a value between two other values. In this case, we are using it to interpolate between white and blue based on the y component of the unit direction vector.
+		// Here UnitDirection.y is from -1 to 1 , bcoz it is a unit vector and we need to convert it to a value between 0 and 1 to use it in the lerp function. We do this by adding 1 to it and then dividing by 2.
+		auto BlendColor = (vec3(1.0f, 1.0f, 1.0f) * (1.0f - lerp)) + (vec3(0.5f, 0.7f, 1.0f) * lerp);
+		return BlendColor;
+		//return vec3(0.0f, 0.0f, 0.0f);	
+	}
 
 
 private:
@@ -190,9 +236,6 @@ private:
 	vec3 v = VEC3INIT;
 	vec3 w = VEC3INIT;
 
-public:
-	double DefocusAngle = 0.0;
-	double FocusDistance = 1.0;
 
 private:
 	int ImageWidth = 400;

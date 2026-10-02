@@ -1,6 +1,6 @@
 #pragma once
+
 #include "Vectors.h"
-//#include "Hittables.h"
 #include "HittablesList.h"
 
 class Light
