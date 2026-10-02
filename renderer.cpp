@@ -11,7 +11,7 @@
 void ScatterRandomMaterial(HittablesList& scene)
 {
 
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 5000; i++)
 	{
 		auto MatChances = RandomDouble();
 		std::shared_ptr<materials> mat;
@@ -22,19 +22,19 @@ void ScatterRandomMaterial(HittablesList& scene)
 			mat = std::make_shared<lambertian>(albedo);
 			auto centre = vec3(RandomDouble(-1.0, 1.0) *30.0,-0.8, RandomDouble(-1.0, 1.0) *30.0);
 			auto centre2 = centre + vec3(0, RandomDouble(0, 0.5), 0);
-			scene.Add(std::make_shared<Sphere>(centre, centre2, 0.2, mat));
+			scene.Add(std::make_shared<Sphere>(centre, centre2, 0.1, mat));
 		}
 		else if (MatChances >= 0.5 && MatChances < 0.85)
 		{
 			auto albedo = RandomVec3(0.5, 1);
 			auto fuzz = RandomVec3(0, 0.5);
 			mat = std::make_shared<metal>(albedo, 0.1);
-			scene.Add(std::make_shared<Sphere>(vec3(RandomDouble(-1.0, 1.0)*30.0, -0.8, RandomDouble(-1.0, 1.0) *30.0), 0.2, mat));
+			scene.Add(std::make_shared<Sphere>(vec3(RandomDouble(-1.0, 1.0)*30.0, -0.8 + 30.0, RandomDouble(-1.0, 1.0) *30.0), 0.1, mat));
 		}
 		else
 		{
 			mat = std::make_shared<Dielectric>(1.5);
-			scene.Add(std::make_shared<Sphere>(vec3(RandomDouble(-1.0, 1.0) *30.0,-0.8, RandomDouble(-1.0, 1.0) *30.0), 0.2, mat));
+			scene.Add(std::make_shared<Sphere>(vec3(RandomDouble(-1.0, 1.0) *30.0,-0.8 + 30.0, RandomDouble(-1.0, 1.0) *30.0), 0.1, mat));
 		}
 	}
 
@@ -72,14 +72,14 @@ int main()
 	ScatterRandomMaterial(scene);
 
 	//Lightings--->
-	Light pl1(vec3(-0.5f, 0.5f, 0.02f), 2.0f); //directional light
+	Light pl1(vec3(0.5f, 0.5f, 0.8f), 0.5f); //directional light
 
 	BvhNode Bvh(scene);
 	//Camera--->
 	Camera c1;
 
-	c1.CameraSetImageWidth(4096);
-	c1.CameraSetSamples(512);
+	c1.CameraSetImageWidth(800);
+	c1.CameraSetSamples(16);
 	c1.CameraSetFov(16);
 
 	c1.CameraSetLookFrom(vec3(-2, 1, 20));

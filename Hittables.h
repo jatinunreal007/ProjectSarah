@@ -1,7 +1,7 @@
 #pragma once
 #include "Vectors.h"
 #include "Ray.h"
-#include "Lightings.h"
+//#include "Lightings.h"
 #include "Utilities.h"
 #include "Aabb.h"
 
@@ -13,6 +13,7 @@ public:
 	vec3 point;
 	vec3 normal;
 	double t = 0.0;
+	double u, v;
 	vec3 color;
 	std::shared_ptr<materials> mat;
 	bool frontFace = false;

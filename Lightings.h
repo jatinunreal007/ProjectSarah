@@ -1,6 +1,7 @@
 #pragma once
 #include "Vectors.h"
-#include "Hittables.h"
+//#include "Hittables.h"
+#include "HittablesList.h"
 
 class Light
 {
@@ -17,6 +18,7 @@ public:
 	{
 		return intensity;
 	}
+
 private:
 	vec3 direction;
 	float intensity;

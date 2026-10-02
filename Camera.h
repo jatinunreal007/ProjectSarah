@@ -126,7 +126,7 @@ public:
 		return Centre + (DefocusDiskX * v.x) + (DefocusDiskY * v.y);
 	}
 	//Render function---->
-	void Render(const Hittable& scene, const Light& pl1)
+	void Render(const Hittable& scene, Light& pl1)
      {
 
         InitializeViewport();

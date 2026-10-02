@@ -9,6 +9,7 @@
 #include "utilities.h"
 #include "HittablesList.h"
 #include "Materials.h"
+#include "Lightings.h"
 
 class Color:public vec3
 {
@@ -64,7 +65,7 @@ public:
 		return colour;
 	}
 	//Finalising Color of the Objects--->
-	vec3 RayColor(const Ray& ray, const Hittable& scene, const Light& pl1, int MaxDepth)
+	vec3 RayColor(const Ray& ray, const Hittable& scene, Light& pl1, int MaxDepth)
 	{
 		if(MaxDepth <= 0)
 			return vec3(0.0f, 0.0f, 0.0f);
