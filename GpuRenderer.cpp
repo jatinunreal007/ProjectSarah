@@ -48,7 +48,7 @@ static vec3 Forward(const CameraState& c)
 	return vec3(std::cos(c.pitch) * std::sin(c.yaw), std::sin(c.pitch), -std::cos(c.pitch) * std::cos(c.yaw));
 }
 
-// Same maths as your Camera::InitializeViewport()
+// Same maths as Camera::InitializeViewport()
 static CamUniforms ComputeCamera(const CameraState& c)
 {
 	const vec3 vup(0, 1, 0);
@@ -220,8 +220,8 @@ static GpuScene BuildDemoScene()
 	still(vec3(0.5, 0.5, 0.0), 1.5, m2);
 	s.SetPlane(vec3(0.0, -1.0, -2.0), vec3(0.0, 1.0, 0.0), ground);
 
-	// NOTE: your CPU scene puts the metal/glass confetti at y = -0.8 + 30 (way above the camera view).
-	// I rest them on the ground instead (y = -0.9, radius 0.1, plane at y = -1).
+	// NOTE:CPU scene puts the metal/glass confetti at y = -0.8 + 30 (way above the camera view).
+	// rest them on the ground instead (y = -0.9, radius 0.1, plane at y = -1).
 	for (int i = 0; i < 5000; i++)
 	{
 		double pick = RandomDouble();
