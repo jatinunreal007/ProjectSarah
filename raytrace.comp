@@ -1,0 +1,265 @@
+#version 430
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(rgba32f, binding = 0) uniform image2D uAccum;           // running sum of samples
+layout(rgba8,   binding = 1) writeonly uniform image2D uOut;   // tonemapped image that gets blitted
+
+struct Sphere   { vec4 c0r; vec4 c1; ivec4 info; };   // c0r = centre@t0 + radius, c1 = centre@t1, info.x = material
+struct Material { vec4 a;   vec4 b;  ivec4 info; };   // info.x = type (0 lambert, 1 metal, 2 glass, 3 checker)
+struct Node     { vec4 bmin; vec4 bmax; ivec4 info; };
+
+layout(std430, binding = 2) readonly buffer Spheres   { Sphere   spheres[];   };
+layout(std430, binding = 3) readonly buffer Materials { Material materials[]; };
+layout(std430, binding = 4) readonly buffer Nodes     { Node     nodes[];     };
+
+uniform ivec2 uRes;
+uniform int   uSamples;     // samples per pixel already stored in uAccum (0 => restart)
+uniform int   uSpp;         // samples taken this dispatch
+uniform int   uMaxDepth;
+uniform uint  uSeed;
+
+uniform vec3 uOrigin;
+uniform vec3 uPixel00;
+uniform vec3 uDu;
+uniform vec3 uDv;
+uniform vec3 uDefU;
+uniform vec3 uDefV;
+uniform int  uDefocus;
+
+uniform int  uHasPlane;
+uniform vec3 uPlanePoint;
+uniform vec3 uPlaneNormal;
+uniform int  uPlaneMat;
+
+const float TMIN = 1e-3;
+const float TMAX = 1e30;
+
+// ------------------------------------------------------------ RNG (PCG)
+uint rng;
+uint hash(uint x) { x ^= x >> 16; x *= 0x7feb352du; x ^= x >> 15; x *= 0x846ca68bu; x ^= x >> 16; return x; }
+float rnd()
+{
+    rng = rng * 747796405u + 2891336453u;
+    uint w = ((rng >> ((rng >> 28u) + 4u)) ^ rng) * 277803737u;
+    w = (w >> 22u) ^ w;
+    return float(w >> 8) * (1.0 / 16777216.0);   // [0,1)
+}
+vec3 randUnit()
+{
+    // same rejection idea as your RandomUnitVec3()
+    for (int i = 0; i < 16; i++)
+    {
+        vec3 v = vec3(rnd(), rnd(), rnd()) * 2.0 - 1.0;
+        float l2 = dot(v, v);
+        if (l2 > 1e-12 && l2 <= 1.0) return v * inversesqrt(l2);
+    }
+    return vec3(0.0, 1.0, 0.0);
+}
+vec2 randDisk()
+{
+    float r = sqrt(rnd());
+    float a = 6.2831853 * rnd();
+    return r * vec2(cos(a), sin(a));
+}
+
+// ------------------------------------------------------------ geometry
+struct Hit { float t; vec3 p; vec3 n; bool front; int mat; };
+
+bool hitAABB(vec3 bmin, vec3 bmax, vec3 ro, vec3 invD, float tmax)
+{
+    vec3 t0 = (bmin - ro) * invD;
+    vec3 t1 = (bmax - ro) * invD;
+    vec3 lo = min(t0, t1);
+    vec3 hi = max(t0, t1);
+    float a = max(max(lo.x, lo.y), max(lo.z, TMIN));
+    float b = min(min(hi.x, hi.y), min(hi.z, tmax));
+    return a <= b;
+}
+
+// rd must be normalised. Uses the numerically friendlier form (important in 32-bit float).
+bool hitSphere(Sphere s, vec3 ro, vec3 rd, float time, float tmax, out float t)
+{
+    vec3  c  = mix(s.c0r.xyz, s.c1.xyz, time);   // moving spheres = motion blur
+    float r  = s.c0r.w;
+    vec3  oc = ro - c;
+    float b  = dot(oc, rd);
+    vec3  q  = oc - rd * b;
+    float disc = r * r - dot(q, q);
+    if (disc < 0.0) return false;
+    float sq = sqrt(disc);
+    float root = -b - sq;
+    if (root < TMIN || root > tmax)
+    {
+        root = -b + sq;
+        if (root < TMIN || root > tmax) return false;
+    }
+    t = root;
+    return true;
+}
+
+bool hitScene(vec3 ro, vec3 rd, float time, out Hit h)
+{
+    float tmax = TMAX;
+    int bestSphere = -1;
+    bool hitPlane = false;
+
+    vec3 invD = 1.0 / rd;
+
+    // iterative BVH traversal (GPUs have no recursion)
+    int stack[32];
+    int sp = 0;
+    stack[sp++] = 0;
+    while (sp > 0)
+    {
+        int ni = stack[--sp];
+        Node nd = nodes[ni];
+        if (!hitAABB(nd.bmin.xyz, nd.bmax.xyz, ro, invD, tmax)) continue;
+
+        if (nd.info.y > 0)           // leaf
+        {
+            for (int i = 0; i < nd.info.y; i++)
+            {
+                int si = nd.info.x + i;
+                float t;
+                if (hitSphere(spheres[si], ro, rd, time, tmax, t)) { tmax = t; bestSphere = si; }
+            }
+        }
+        else                         // interior: left = ni+1, right = info.x
+        {
+            stack[sp++] = nd.info.x;
+            stack[sp++] = ni + 1;
+        }
+    }
+
+    if (uHasPlane != 0)
+    {
+        float denom = dot(uPlaneNormal, rd);
+        if (abs(denom) > 1e-8)
+        {
+            float t = dot(uPlaneNormal, uPlanePoint - ro) / denom;
+            if (t > TMIN && t < tmax) { tmax = t; hitPlane = true; }
+        }
+    }
+
+    if (bestSphere < 0 && !hitPlane) return false;
+
+    h.t = tmax;
+    h.p = ro + rd * tmax;
+    vec3 outward;
+    if (hitPlane)
+    {
+        outward = uPlaneNormal;
+        h.mat = uPlaneMat;
+    }
+    else
+    {
+        Sphere s = spheres[bestSphere];
+        vec3 c = mix(s.c0r.xyz, s.c1.xyz, time);
+        outward = (h.p - c) / s.c0r.w;
+        h.mat = s.info.x;
+    }
+    h.front = dot(rd, outward) < 0.0;
+    h.n = h.front ? outward : -outward;
+    return true;
+}
+
+// ------------------------------------------------------------ shading
+float reflectance(float cosine, float ri)
+{
+    float r0 = (1.0 - ri) / (1.0 + ri);
+    r0 = r0 * r0;
+    return r0 + (1.0 - r0) * pow(1.0 - cosine, 5.0);
+}
+
+vec3 sky(vec3 rd)
+{
+    float t = 0.5 * (rd.y + 1.0);
+    return mix(vec3(1.0), vec3(0.5, 0.7, 1.0), t);
+}
+
+// Your recursive RayColor() turned into a loop that carries 'throughput'
+vec3 trace(vec3 ro, vec3 rd, float time)
+{
+    vec3 throughput = vec3(1.0);
+
+    for (int depth = 0; depth < uMaxDepth; depth++)
+    {
+        Hit h;
+        if (!hitScene(ro, rd, time, h))
+            return throughput * sky(rd);
+
+        Material m = materials[h.mat];
+        int type = m.info.x;
+        vec3 dir;
+
+        if (type == 0 || type == 3)                      // lambertian / checker
+        {
+            vec3 albedo = m.a.xyz;
+            if (type == 3)
+            {
+                ivec3 c = ivec3(floor(h.p * m.b.w));
+                albedo = (((c.x + c.y + c.z) & 1) == 0) ? m.a.xyz : m.b.xyz;
+            }
+            dir = h.n + randUnit();
+            if (dot(dir, dir) < 1e-12) dir = h.n;
+            throughput *= albedo;
+        }
+        else if (type == 1)                              // metal
+        {
+            dir = normalize(reflect(rd, h.n)) + randUnit() * m.a.w;
+            if (dot(dir, h.n) <= 0.0) return vec3(0.0);
+            throughput *= m.a.xyz;
+        }
+        else                                             // dielectric
+        {
+            float ri   = h.front ? 1.0 / m.a.w : m.a.w;
+            float cosT = min(dot(-rd, h.n), 1.0);
+            float sinT = sqrt(max(0.0, 1.0 - cosT * cosT));
+            if (ri * sinT > 1.0 || reflectance(cosT, ri) > rnd())
+                dir = reflect(rd, h.n);
+            else
+                dir = refract(rd, h.n, ri);
+        }
+
+        ro = h.p;
+        rd = normalize(dir);
+    }
+    return vec3(0.0);
+}
+
+// ------------------------------------------------------------ main
+void main()
+{
+    ivec2 pix = ivec2(gl_GlobalInvocationID.xy);
+    if (pix.x >= uRes.x || pix.y >= uRes.y) return;
+
+    rng = hash(uint(pix.x) + uint(pix.y) * uint(uRes.x)) ^ hash(uSeed * 0x9e3779b9u + 1u);
+
+    float row = float(uRes.y - 1 - pix.y);    // GL images are bottom-up, your PPM was top-down
+
+    vec3 sum = vec3(0.0);
+    for (int s = 0; s < uSpp; s++)
+    {
+        vec2 off = vec2(rnd(), rnd()) - 0.5;
+        vec3 target = uPixel00 + uDu * (float(pix.x) + off.x) + uDv * (row + off.y);
+
+        vec3 o = uOrigin;
+        if (uDefocus != 0)
+        {
+            vec2 d = randDisk();
+            o += uDefU * d.x + uDefV * d.y;
+        }
+        vec3 dir = normalize(target - o);
+
+        // clamp fireflies a little: essential for clean interactive output
+        sum += min(trace(o, dir, rnd()), vec3(10.0));
+    }
+
+    vec3 prev = (uSamples == 0) ? vec3(0.0) : imageLoad(uAccum, pix).rgb;
+    vec3 acc  = prev + sum;
+    imageStore(uAccum, pix, vec4(acc, 1.0));
+
+    vec3 avg = acc / float(uSamples + uSpp);
+    avg = sqrt(clamp(avg, 0.0, 1.0));          // gamma 2.0, same as your ColorOut
+    imageStore(uOut, pix, vec4(avg, 1.0));
+}

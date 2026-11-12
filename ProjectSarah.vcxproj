@@ -141,10 +141,15 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="raytrace.comp" />
     <None Include="render.ppm" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="GpuRenderer.cpp" />
+    <ClCompile Include="renderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Aabb.h" />
@@ -152,6 +157,7 @@
     <ClInclude Include="Bvh.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="GpuScene.h" />
     <ClInclude Include="HittablesList.h" />
     <ClInclude Include="Lightings.h" />
     <ClInclude Include="Hittables.h" />
@@ -160,6 +166,9 @@
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vectors.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

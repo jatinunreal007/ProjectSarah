@@ -83,13 +83,13 @@ int main()
 
 	c1.CameraSetImageWidth(4096);
 	c1.CameraSetSamples(256);
-	c1.CameraSetFov(14);
+	c1.CameraSetFov(12);
 
-	c1.CameraSetLookFrom(vec3(-3, 5.5, 24));
+	c1.CameraSetLookFrom(vec3(-3, 5.8, 24));
 	c1.CameraSetLookAt(vec3(0.5,0.5,0.0));
 	c1.CameraSetVup(vec3(0,1,0));
 
-	c1.CameraSetDefocusAngle(0.5);
+	c1.CameraSetDefocusAngle(0.6);
 	c1.CameraSetFocusDistance(20.8);
 
 	std::cout << "Starting Render....\n";
