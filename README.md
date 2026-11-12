@@ -5,7 +5,7 @@ A physically-based ray tracer built from scratch in C++, following along with an
 - **CPU renderer** (`renderer.cpp`): high-quality offline renders written to a `.ppm` image.
 - **GPU renderer** (`GpuRenderer.cpp` + `raytrace.comp`): a real-time OpenGL compute-shader path tracer with a live FPS counter and a fly-around camera.
 
-<img width="4096" height="2155" alt="SphereRender14(512)" src="https://github.com/user-attachments/assets/4c82bbf7-a72a-42e4-956c-2579204adc4d" />
+<img width="4096" height="1713" alt="render" src="https://github.com/user-attachments/assets/f08cb5a5-e84b-44da-94eb-c1042ee14c94" />
 
 *Render as of 24-08-2026*
 
